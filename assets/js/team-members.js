@@ -24,7 +24,7 @@ const teamMembers = [
         specialty: "Frontend Developer"
     },
     {
-        name: "Zoli",
+        name: "Zoltán Renczes",
         github: "Zoli17",
         role: "[Role/Responsibility]",
         specialty: "Frontend Developer"
