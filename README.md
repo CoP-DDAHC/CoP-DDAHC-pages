@@ -6,7 +6,7 @@ It will be periodically updated by adding meeting minutes and updates about the 
 #### Project Description
 You can read more about the project on the website. The whole assignment description is also available in the [assignment.md](assignment.md) file.
 
-Meeting minutes are downloadable directly from the website or from the [meeting-minutes](meeting-minutes) folder.
+Meeting minutes are downloadable directly from the website or from the [minutes](minutes) folder.
 
 #### Website Technologies
 The website is built using plain HTML and JavaScript, Bootstrap 5, and custom CSS. The website is hosted on GitHub Pages.
