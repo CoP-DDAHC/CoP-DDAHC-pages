@@ -1,0 +1,22 @@
+[
+  {
+    "date": "2025-09-26",
+    "title": "Úvodné stretnutie tímu",
+    "file": "2025-09-26-uvod.md"
+  },
+  {
+    "date": "2025-10-03",
+    "title": "Analýza požiadaviek a plánovanie",
+    "file": "2025-10-03-planovanie.md"
+  },
+  {
+    "date": "2025-10-10",
+    "title": "Návrh architektúry systému",
+    "file": "2025-10-10-architektura.md"
+  },
+  {
+    "date": "2025-10-10",
+    "title": "Návrh architektúry systému 2",
+    "file": "2025-10-10-architektura.md"
+  }
+]
