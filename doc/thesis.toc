@@ -1,0 +1,12 @@
+\babel@toc {slovak}{}\relax 
+\thispagestyle {plain}
+\contentsline {section}{\'{U}vod}{10}{section*.1}%
+\contentsline {section}{\numberline {1}Zápisnice zo stretnutí}{11}{section.2}%
+\contentsline {subsection}{\numberline {1.1}Zimný semester 2025/26}{11}{subsection.3}%
+\contentsline {subsubsection}{\numberline {1.1.1}Úvodné stretnutie tímu – 25. septembra 2025}{11}{subsubsection.4}%
+\contentsline {paragraph}{1. Oboznámenie sa s projektom}{11}{Item.9}%
+\contentsline {paragraph}{2. Rozdelenie rolí}{12}{Item.9}%
+\contentsline {paragraph}{3. Organizačné pokyny}{12}{Item.9}%
+\contentsline {paragraph}{4. Diskusia o technológiách a funkcionalitách}{12}{Item.9}%
+\contentsline {paragraph}{5. Úlohy do nasledujúceho stretnutia}{13}{Item.14}%
+\contentsline {section}{Z\'{a}ver}{14}{section*.15}%

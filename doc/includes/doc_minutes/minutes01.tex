@@ -1,0 +1,90 @@
+\subsubsection{Úvodné stretnutie tímu – 25. septembra 2025}
+
+\textbf{Dátum:} 25. septembra 2025 \\
+\textbf{Čas:} 12:00 – 13:00 \\
+\textbf{Umiestnenie:} Slovenská technická univerzita v Bratislave, Fakulta elektrotechniky a informatiky \\
+\textbf{Miestnosť:} A208, FEI STU \\
+\textbf{Zapisovateľ:} Bc. Juraj Hušek
+
+\vspace{0.5cm}
+\textbf{Účastníci:}
+\begin{itemize}
+    \item Bc. Michal Balogh – ML/AI Engineer
+    \item Bc. Juraj Hušek – Backend Developer
+    \item Bc. Ján Osadský – Backend Developer
+    \item Bc. Fridrich Molnár – Frontend Developer
+    \item Bc. Zoltán Renczes – Frontend Developer
+\end{itemize}
+
+\textbf{Vedúci tímového projektu:} Ing. Stanislav Marochok
+
+\vspace{0.5cm}
+\textbf{Program stretnutia:}
+\begin{enumerate}
+    \item Oboznámenie sa s projektom
+    \item Rozdelenie rolí v tíme
+    \item Organizačné pokyny
+    \item Diskusia o technológiách a funkcionalitách
+    \item Plánovanie ďalších krokov
+\end{enumerate}
+
+\vspace{0.5cm}
+\textbf{Diskusia a rozhodnutia:}
+
+\paragraph{1. Oboznámenie sa s projektom} 
+Vedúci projektu podrobne predstavil zadanie. Cieľom je vyvinúť plnohodnotnú webovú aplikáciu, ktorá umožní digitalizáciu, anotáciu, rozpoznávanie a dešifrovanie historických šifrovaných textov. Diskutovalo sa o výskumnom potenciáli aj praktickom prínose riešenia. Tím sa zhodol na potrebe modulárneho prístupu a postupného zavádzania funkcionalít.
+
+\paragraph{2. Rozdelenie rolí} 
+Tím sa dohodol na nasledovnom rozdelení úloh:
+\begin{itemize}
+    \item ML/AI Engineer: Bc. Michal Balogh
+    \item Backend Developers: Bc. Juraj Hušek, Bc. Ján Osadský
+    \item Frontend Developers: Bc. Fridrich Molnár, Bc. Zoltán Renczes
+\end{itemize}
+Rozdelenie vychádza z predchádzajúcich skúseností členov a zodpovedá potrebám projektu.
+
+\paragraph{3. Organizačné pokyny} 
+Stretnutia budú pravidelne každý štvrtok o 12:00 v miestnosti A208. GitHub bude využívaný ako spoločný repozitár zdrojového kódu webovej aplikácie, webovej stránky projektu a AI experimentov. Komunikácia ohľadom projektu bude prebiehať prezenčne a na platforme Discord. Tím sa zhodol, že je potrebné zaviesť pravidelné konzultácie s vedúcim tímového projektu, aby sa predišlo nejasnostiam a priebežne sa riešili otázky, problémy a možné ďalšie funkcionality.
+
+\paragraph{4. Diskusia o technológiách a funkcionalitách} 
+Diskutovalo sa o základnom návrhu architektúry a výbere technológií:
+\begin{itemize}
+    \item Backend: Python FastAPI alebo Flask
+    \item Frontend: React
+    \item Databáza: PostgreSQL alebo MySQL
+    \item AI/ML: Python (OpenCV, TensorFlow alebo PyTorch)
+    \item Deployment: Docker a Raspberry Pi 5 pre webovú aplikáciu, GitHub Pages pre informačnú stránku projektu
+\end{itemize}
+
+\textbf{Diskusia o úvodnej funkcionalite:}  
+Diskutovali sme o návrhu základných krokov úvodnej funkcionality aplikácie, ktorá by mala umožniť používateľovi nahrať dokument do systému. Ide o pracovný návrh, ktorý nie je finálny a bude ešte spresňovaný v nasledujúcich konzultáciách:
+\begin{enumerate}
+    \item Nahratie dokumentu a klasifikácia – systém rozpozná, či ide o textový dokument. Ak dokument nebude textového charakteru, spracovanie sa zastaví.
+    \item Preprocessing – plánované operácie: deskewing, binarizácia a odstránenie šumu, pričom používateľ bude mať možnosť nastavovať parametre.
+    \item Detekcia obsahu – identifikácia tabuliek, textových oblastí alebo šifrovaných úsekov.
+    \item Priradenie symbolov – pokus o mapovanie šifrovaných častí na znaky uložené v databáze a ponuka možných riešení používateľovi.
+    \item Možnosť manuálnych zásahov – každý krok bude realizovateľný aj manuálne, neurónové siete budú slúžiť len ako asistent.
+\end{enumerate}
+
+\paragraph{5. Úlohy do nasledujúceho stretnutia}
+\begin{itemize}
+    \item Všetci členovia: detailne si preštudovať zadanie projektu.
+    \item Bc. Michal Balogh: založiť GitHub projekt, vytvoriť príslušné repozitáre a pripraviť základnú verziu webovej stránky projektu.
+    \item Bc. Juraj Hušek, Bc. Michal Balogh, Bc. Ján Osadský: vypracovať a navrhnúť use case diagramy webovej aplikácie.
+    \item Bc. Fridrich Molnár a Bc. Zoltán Renczes: preskúmať možnosti a konfiguračné kroky potrebné na nasadenie aplikácie na Raspberry Pi server.
+\end{itemize}
+
+\vspace{0.5cm}
+\textbf{Nasledujúce stretnutie:} \\
+Dátum: 2. októbra 2025 \\
+Čas: 12:00 \\
+Umiestnenie: Slovenská technická univerzita v Bratislave, Fakulta elektrotechniky a informatiky \\
+Miestnosť: A208, FEI STU
+
+\vspace{0.5cm}
+\textbf{Poznámky:}
+\begin{itemize}
+    \item Projekt má potenciál priniesť významné výsledky z pohľadu výskumu aj praktického využitia.
+    \item Tím sa zhodol, že na jeho realizáciu je vhodné postupovať agilným spôsobom, aby bolo možné priebežne reagovať na nové požiadavky a zistenia.
+    \item Zdôraznená bola potreba pravidelných konzultácií s vedúcim tímového projektu, ktoré umožnia včasnú identifikáciu a riešenie problémov a ďalších funkcionalít systému.
+\end{itemize}
