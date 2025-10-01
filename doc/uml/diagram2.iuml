@@ -1,0 +1,40 @@
+@startuml
+left to right direction
+actor "Používateľ" as user
+actor "AI modul" as AI
+
+rectangle "Spracovanie dokumentov" {
+  (Nahrať dokument) as U1
+  (Klasifikovať dokument) as U2
+  (Nastaviť parametre predspracovania) as U3
+  (Spustiť automatické predspracovanie) as U4
+  (Upraviť výsledky predspracovania) as U5
+  (Detekovať tabuľku v kľúči) as U6
+  (Vyhľadať oblasti záujmu) as U7
+  (Anotovať symboly a oblasti) as U8
+  (Mapovať symboly) as U9
+  (Rekonštruovať tabuľku) as U10
+  (Použiť kľúč na dešifrovanie) as U11
+  (Upraviť návrh dešifrovania) as U12
+  
+}
+
+user -- U1
+U1 --> U3 : <<include>>
+U1 --> U4 : <<include>>
+U1 --> U2 : <<include>>
+U4 <-- U5 : <<extend>>
+user -- U5
+AI -- U4
+AI -- U6
+user -- U7
+AI -- U7
+user -- U8
+user -- U9
+AI -- U9
+user -- U10
+AI -- U10
+user -- U11
+U11 <-- U12 : <<extend>>
+
+@enduml

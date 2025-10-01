@@ -1,0 +1,44 @@
+@startuml
+left to right direction
+actor Používateľ
+actor "Administrátor" as admin
+
+rectangle "Správa používateľského profilu a dokumentov" {
+  (Nahrať dokument) as U1
+  (Registrovať sa) as U6
+  (Prihlásiť / Odhlásiť sa) as U7
+  (Upraviť profil) as U8
+  (Spravovať svoje dokumenty) as U9
+  (Prezerať všetky dokumenty) as U10
+  (Zobraziť zoznam kľúčov) as U11
+  (Zobraziť zoznam šifrovaných textov) as U12
+  (Zmena public/private dostupnosti) as U13
+  (Zdieľať dokument) as U14
+  (Získať body za aktivitu) as U15
+  (Minúť body) as U16
+  (Zmena bodového stavu) as U21
+  (Zobraziť rebríček používateľov) as U17
+  (Spravovať používateľov) as U18
+  (Spravovať projekty) as U19
+  (Spravovať symbolovú databázu) as U20 
+}
+
+Používateľ -- U1
+Používateľ -- U6
+Používateľ -- U7
+Používateľ -- U8
+Používateľ -- U10
+U10 <-- U11 : <<extend>>
+U10 <-- U12 : <<extend>>
+Používateľ -- U17
+Používateľ -- U21
+U21 <|-- U15
+U21 <|-- U16
+Používateľ -- U9
+U9 <-- U14: <<extend>>
+U14 --> U13: <<include>>
+admin --|> Používateľ
+admin -- U18
+admin -- U19
+admin -- U20
+@enduml
