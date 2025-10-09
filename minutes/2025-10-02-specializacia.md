@@ -43,8 +43,8 @@ Absolútnou prioritou vedúceho projektu bolo v aktuálnej fáze vytvoriť proof
 - **Všetci členovia:** detailne si preštudovať doplnenú funkcionalitu a špecifikácie projektu.  
 - **Bc. Michal Balogh:** štúdium použiteľných datasetov na trénovanie AI.  
 - **Bc. Juraj Hušek, Bc. Ján Osadský:** vytvorenie štruktúry programu v repozitári, aktualizovať use case diagramy a položiť architektúru projektu.  
-- **Bc. Fridrich Molnár a Bc. Zoltán Renczes:** Spustenie Raspberry Pi server a začať proof of concept.  
-
+- **Bc. Fridrich Molnár:** Spustenie Raspberry Pi server a začať proof of concept. Spustenie základnej funkcionality frontendu. 
+- **Bc. Zoltán Renczes:** Naštudovanie vhodného frontend prístupu a vizuálneho rozloženia. Optimalizácia prostredia pre zadanú funkcionalitu. Začať proof of concept.
 ## Nasledujúce stretnutie
 **Dátum:** 9. októbra 2025  
 **Čas:** 12:00  
@@ -54,3 +54,4 @@ Absolútnou prioritou vedúceho projektu bolo v aktuálnej fáze vytvoriť proof
 ## Poznámky
 - Tím sa zhodol, že niektoré funkcionality je správne doimplementovať až po spustení programu so základnou funkcionalitou.  
 - Zdôraznená bola potreba pravidelných konzultácií s vedúcim tímového projektu, ktoré umožnia včasnú identifikáciu a riešenie problémov a ďalších funkcionalít systému. Tím sa dohodol, že pravidelné hodinové štvrtkové stretnutia vyhovujú všetkým členom.
+- Tím je stále v procese výberu vhodného mena pre aplikáciu.
