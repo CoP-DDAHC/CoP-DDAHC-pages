@@ -8,5 +8,10 @@
     "date": "2025-10-02",
     "title": "Špecializácia požiadaviek",
     "file": "2025-10-02-specializacia.md"
-  }
+  },
+  {
+  "date": "2025-10-09",
+  "title": "Docker setup a klasifikácia dokumentov",
+  "file": "2025-10-09-prostredie.md"
+}
 ]
