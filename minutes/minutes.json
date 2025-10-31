@@ -13,5 +13,10 @@
   "date": "2025-10-09",
   "title": "Docker setup a klasifikácia dokumentov",
   "file": "2025-10-09-prostredie.md"
-}
+  },
+  {
+    "date": "2025-10-23",
+    "title": "Požiadavky na UI a integrácia modelu",
+    "file": "2025-10-23-poziadavky_na_ui.md"
+  }
 ]
