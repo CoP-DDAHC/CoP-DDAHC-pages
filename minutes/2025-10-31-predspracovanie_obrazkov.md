@@ -1,4 +1,4 @@
-# Zápisnica - Kontrola postupu a požiadavky na UI
+# Zápisnica - Predspracovanie obrázkov
 **Dátum:** 31. október 2025
 **Čas:** 14:00 - 14:45
 **Miesto:** Online - Discord
