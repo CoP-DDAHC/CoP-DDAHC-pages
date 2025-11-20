@@ -1,5 +1,5 @@
 # Zápisnica - Rozšírenie datasetu a nové BE/FE funkcionality
-**Dátum:** 6. november 2025
+**Dátum:** 13. november 2025
 **Čas:** 12:00 - 13:00
 **Miesto:** A 208, FEI STU / Discord (online)
 **Zapisovateľ:** Juraj Hušek
