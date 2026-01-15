@@ -1,0 +1,37 @@
+@startuml
+title ER diagram databázy backendu
+
+entity "users" as users {
+  +id : int <<PK>>
+  --
+  username : varchar
+  email : varchar
+  hashed_password : varchar
+  role : userrole
+  created_at : timestamptz
+  google_id : varchar
+  auth_provider : varchar
+  is_verified : boolean
+}
+
+entity "documents" as documents {
+  +id : int <<PK>>
+  --
+  owner_id : int <<FK>>
+  name : varchar
+  meta_data : json
+  data : bytea
+}
+
+entity "change_logs" as changelogs {
+  +id : int <<PK>>
+  --
+  user_id : int <<FK>>
+  document_id : int <<FK>>
+}
+
+users ||--o{ documents 
+users ||--o{ changelogs 
+documents ||--o{ changelogs 
+
+@enduml

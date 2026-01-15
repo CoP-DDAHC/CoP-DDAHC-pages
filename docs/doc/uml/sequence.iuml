@@ -1,0 +1,41 @@
+@startuml
+title Sekvenčný diagram spracovania dokumentu
+
+actor Používateľ
+participant "Frontend\n(Aplikačná vrstva)" as FE
+participant "Backend systému" as BE
+participant "AI modul" as AI
+database "Dátové úložisko" as DB
+
+Používateľ -> FE : Nahratie dokumentu
+FE -> BE : Odoslanie dokumentu\n+ metadata
+
+BE -> DB : Uloženie dokumentu
+DB --> BE : Potvrdenie uloženia
+
+BE -> AI : Požiadavka na spracovanie dokumentu
+
+activate AI
+AI -> AI : Úvodná kontrola dokumentu
+AI -> AI : Predspracovanie obrazu
+AI -> AI : Detekcia štruktúr a symbolov
+AI -> AI : Návrh anotácií
+AI --> BE : Výsledky spracovania
+deactivate AI
+
+BE -> DB : Uloženie výsledkov\n(anotácie, metadáta)
+DB --> BE : Potvrdenie uloženia
+
+BE -> FE : Výsledky spracovania
+FE -> Používateľ : Zobrazenie výsledkov
+
+Používateľ -> FE : Manuálne úpravy\n(anotácie, mapovanie)
+FE -> BE : Odoslanie upravených dát
+
+BE -> DB : Aktualizácia dát
+DB --> BE : Potvrdenie aktualizácie
+
+BE -> FE : Aktualizované výsledky
+FE -> Používateľ : Zobrazenie finálneho stavu
+
+@enduml
