@@ -1,0 +1,34 @@
+Serverové prostredie projektu
+Pre nasadenie našej aplikácie sme sa rozhodli vytvoriť vlastné serverové prostredie namiesto využitia komerčného webhostingu. Tento prístup nám poskytol úplnú kontrolu nad konfiguráciou servera a umožnil nám prakticky si vyskúšať celý proces nasadzovania webových služieb. Navyše sme mohli riešenie prispôsobiť špecifickým potrebám nášho tímového projektu, čo umožnilo optimalizovať výkon, bezpečnosť a spravovateľnosť systému.
+
+Mikropočítač Raspberry Pi 5
+Ako základ serverového prostredia sme použili mikropočítač Raspberry Pi 5, moderné jednodeskové zariadenie, ktoré spája vysoký výkon, dostatočnú kapacitu pamäte RAM a nízku spotrebu energie. Raspberry Pi 5 umožňuje efektívne spúšťať viacero služieb súčasne a poskytuje ideálne prostredie pre experimentovanie s modernými technológiami serverového nasadenia.
+V našom projekte slúži Raspberry Pi 5 ako centrálny server, ktorý hostuje všetky komponenty aplikácie vrátane backendu, podporných služieb a bezpečnostných mechanizmov. Výkonný procesor a 8 GB RAM umožňujú spúšťanie viacerých Docker kontajnerov, čo zabezpečuje izoláciu jednotlivých služieb, jednoduchú správu, flexibilitu pri aktualizáciách a znížené riziko konfliktov medzi aplikáciami. Raspberry Pi nám zároveň poskytlo praktickú skúsenosť s riadením serverového prostredia a správou sietí, čo je pre našu tímovú prácu veľmi cenné.
+
+Použité technológie
+Docker
+Docker je moderná platforma určená na vytváranie, distribúciu a spúšťanie aplikácií v kontajneroch. Kontajnery umožňujú, aby aplikácie bežali izolovane od hostiteľského systému, pričom obsahujú všetky potrebné závislosti, knižnice a konfigurácie. Tento prístup zabezpečuje, že aplikácia sa správa konzistentne bez ohľadu na prostredie, v ktorom je nasadená, či už ide o vývojový počítač, testovacie prostredie alebo produkčný server.
+Docker sme využili na spúšťanie všetkých hlavných služieb systému v izolovaných kontajneroch. V projekte sme Docker použili pre backendové API, databázu, modul umelej inteligencie a ďalšie podporné služby. Kontajnery prinášajú viaceré výhody: umožňujú rýchle spúšťanie a vypínanie služieb, izoláciu prostredia, jednoduchú aktualizáciu jednotlivých komponentov a horizontálne škálovanie podľa potreby. Docker navyše umožňuje jednoduchú migráciu aplikácie na iný hardvér a experimentovanie s rôznymi konfiguráciami služieb bez narušenia prevádzky celého systému.
+
+
+
+Nginx
+V projekte sme použili Nginx ako vysoko výkonný webový server a reverzný proxy server, ktorý plní dve hlavné úlohy. Prvou je servovanie frontendu, teda statické súbory, ako HTML, CSS a JavaScript, sú poskytované priamo klientovi, čo zabezpečuje rýchle načítanie stránky a efektívnu prevádzku aplikácie. Druhou úlohou Nginxu je proxy-pass pre backendové a podporné služby, kde presmerováva požiadavky používateľov na príslušné služby bežiace v Docker kontajneroch, ako sú backendové API alebo AI modul. Tento prístup umožňuje, aby všetky služby bežali pod jednou doménou a používateľ získal jednotné a prehľadné rozhranie bez nutnosti orientácie v technickom rozdelení systému
+Použitie Nginxu prináša viacero výhod. Server efektívne spracováva statický obsah, čím zvyšuje výkon frontendovej aplikácie, a zároveň umožňuje centralizovanú správu viacerých služieb pod jednou doménou. Zabezpečený prenos dát cez HTTPS chráni komunikáciu medzi používateľom a serverom a SSL terminácia odľahčuje backend od náročných kryptografických operácií.
+
+Sprístupnenie aplikácie cez internet
+Aby bola naša aplikácia dostupná aj mimo lokálnej siete, bolo potrebné zabezpečiť správne nasmerovanie domény a šifrovanú komunikáciu cez HTTPS. Najprv sme získali vlastnú doménu prostredníctvom služby Namecheap, čo umožňuje používateľom pohodlne pristupovať k aplikácii bez zadávania IP adresy servera.
+Na smerovanie domény a zabezpečenie šifrovania sme využili službu Cloudflare, ktorá poskytuje DNS správu, SSL certifikáty a ochranu proti útokom. Do Cloudflare sme pridali našu doménu a nastavili A záznam smerujúci na verejnú IP adresu Raspberry Pi 5 servera. Aktiváciou režimu SSL/TLS Full (Strict) sme zabezpečili šifrovanú komunikáciu medzi používateľom a serverom, pričom Cloudflare automaticky vygeneroval a nasadil SSL certifikát pre našu doménu.
+Vďaka týmto krokom je aplikácia bezpečne dostupná z internetu a používatelia môžu k nej pristupovať jednoducho prostredníctvom jednej domény, pričom sú všetky dáta prenášané šifrovane cez HTTPS. Tento prístup zjednodušuje správu servera a zároveň zvyšuje bezpečnosť celej platformy.
+
+Presmerovanie portov (port forwarding)
+Aby bol server prístupný z internetu, nastavili sme presmerovanie portov na domácom routeri. Porty 80 (HTTP) a 443 (HTTPS) sme presmerovali na statickú lokálnu IP adresu Raspberry Pi. Takto sú všetky požiadavky prichádzajúce na verejnú IP adresu správne doručované na server a aplikácia je dostupná pre používateľov z vonkajšej siete.
+
+
+
+Webový server a prístup k aplikácii
+Ako vstupný bod do systému sme použili webový server, ktorý zabezpečuje centrálnu správu prichádzajúcich požiadaviek a koordinuje komunikáciu medzi jednotlivými časťami platformy. Webový server spracováva požiadavky od používateľov, distribuuje frontendovú časť aplikácie a zároveň presmerováva relevantné požiadavky na príslušné aplikačné služby, ako sú backend alebo modul umelej inteligencie.
+Vďaka tomuto riešeniu sme používateľom umožnili prístup k celej platforme prostredníctvom jednej domény, bez potreby znalosti vnútorného rozdelenia systému či portov jednotlivých služieb. Takýto prístup zjednodušuje používateľskú skúsenosť, zvyšuje bezpečnosť systému a uľahčuje jeho správu a údržbu.
+Nasadenie a prevádzka
+Všetky služby platformy sú nasadené prostredníctvom Docker Compose, čo umožňuje ich izolovanú prevádzku, jednoduchú správu a nezávislé aktualizácie. Tento prístup zaručuje stabilitu systému, minimalizuje riziko konfliktov medzi službami a umožňuje flexibilné rozširovanie platformy o nové komponenty.
+Každá služba beží ako samostatný kontajner, čo uľahčuje diagnostiku prípadných problémov a zjednodušuje správu systému. Izolovaná prevádzka zvyšuje bezpečnosť a spoľahlivosť celého serverového prostredia a poskytuje praktickú platformu na štúdium moderných metodík správy serverov a nasadzovania webových aplikácií.

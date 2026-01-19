@@ -1,0 +1,69 @@
+Implementácia frontendu
+Frontendová časť systému bola implementovaná ako samostatná webová aplikácia postavená na knižnici React. Frontend zabezpečuje používateľské rozhranie, spracovanie vstupov od používateľa, ako sú registrácia, prihlásenie, nahrávanie a správa dokumentov, ako aj komunikáciu s backendovou službou prostredníctvom REST API. V architektúre systému frontend predstavuje prezentačnú vrstvu, ktorá sprostredkúva interakciu používateľa s aplikačnou logikou a službami implementovanými na serverovej strane.
+Z hľadiska tímového projektu frontendová časť tvorí samostatný modul, ktorý je vyvíjaný nezávisle od backendovej a AI časti systému. Takéto rozdelenie umožňuje paralelný vývoj jednotlivých komponentov, jednoduchšie testovanie a bezproblémové nasadenie aplikácie v kontajnerizovanom prostredí.
+
+1 Použité technológie
+Frontend bol implementovaný pomocou knižnice React, ktorá umožňuje tvorbu používateľského rozhrania na základe komponentového princípu. Navigácia medzi jednotlivými obrazovkami aplikácie, ako sú domovská stránka, registrácia, prihlásenie, nahrávanie dokumentov a správa dokumentov používateľa, je realizovaná pomocou knižnice React Router, vďaka čomu je aplikácia implementovaná ako Single Page Application bez potreby opätovného načítania stránky.
+Na zobrazovanie používateľských notifikácií, napríklad pri úspešnej registrácii, prihlásení alebo chybových stavoch, je použitá knižnica React-Toastify. Build a vývojové skripty aplikácie sú riešené prostredníctvom nástroja Create React App, konkrétne balíka react-scripts. Zoznam všetkých použitých závislostí je definovaný v súbore package.json, ktorý obsahuje okrem iného React, React DOM, React Router DOM, react-scripts a react-toastify.
+
+2 Architektúra frontendu
+Frontend je navrhnutý ako SPA aplikácia, v ktorej hlavný komponent App plní úlohu centrálneho riadiaceho prvku. Tento komponent spravuje autentifikačný stav používateľa, zabezpečuje navigáciu v rámci aplikácie, definuje smerovanie na jednotlivé stránky a zároveň obmedzuje prístup ku chránenej funkcionalite, ako je nahrávanie dokumentov a správa používateľských dokumentov, pre neprihlásených používateľov.
+Aplikácia je implementovaná pomocou komponentov, pričom jednotlivé pohľady aplikácie sú reprezentované samostatnými komponentmi. Domovská stránka slúži ako úvodný informačný pohľad, komponent Register zabezpečuje registráciu nových používateľov, komponent Login realizuje prihlasovanie do systému, komponent Upload umožňuje nahrávanie a vizuálne spracovanie dokumentov a komponent DocumentsList slúži na zobrazenie a správu dokumentov patriacich prihlásenému používateľovi.
+Vzhľad používateľského rozhrania je riešený kombináciou globálnych štýlov definovaných v súbore App.css, ktoré zabezpečujú základný layout aplikácie, navigáciu a vizuálnu konzistenciu, a lokálnych štýlov v súboroch Upload.css a DocumentsList.css, ktoré sú určené pre špecifický dizajn formulára na nahrávanie dokumentov, zobrazenie zoznamu dokumentov a modálne dialógové okná.
+
+3 Inicializácia aplikácie a vstupné súbory
+Súbor public/index.html predstavuje statickú HTML kostru aplikácie a obsahuje koreňový DOM element <div id="root"></div>, do ktorého React aplikácia dynamicky renderuje celý obsah. Súbor src/index.js zabezpečuje inicializáciu React aplikácie pomocou funkcie createRoot a vykreslenie hlavného komponentu App. Okrem toho definuje aj jednoduchý statický komponent hlavičky, čím vytvára jednotné vizuálne orámovanie aplikácie.
+
+4 Smerovanie a riadenie prístupu
+Hlavná logika navigácie je implementovaná v súbore App.js. React Router sa používa na definovanie jednotlivých trás aplikácie, pričom prístup k vybraným stránkam je podmienený stavom prihlásenia používateľa. Neprihlásený používateľ má prístup iba k domovskej stránke, registrácii a prihláseniu, zatiaľ čo nahrávanie dokumentov a správa dokumentov používateľa sú dostupné výhradne po úspešnom prihlásení.
+Frontend pracuje s autentifikačným stavom tak, že po prihlásení ukladá používateľské údaje a autentifikačný token do úložiska localStorage. Pri načítaní aplikácie sa stav prihláseného používateľa obnovuje pomocou hooku useEffect a pri odhlásení sú tieto údaje z localStorage odstránené. Tento prístup zvyšuje použiteľnosť aplikácie tým, že používateľ ostáva prihlásený aj po obnovení stránky.
+
+
+5 Implementácia používateľských funkcionalít
+5.1 Domovská stránka
+Komponent Home slúži ako úvodný informačný pohľad aplikácie. Zobrazuje privítanie používateľa a zároveň spracúva jednorazové notifikácie po úspešnej registrácii alebo prihlásení. Na tento účel využíva sessionStorage v kombinácii s knižnicou React-Toastify, čím sa zabezpečuje, že notifikačné správy sa zobrazia iba raz.
+
+![Home Page](img/frontend_home.jpg)
+
+
+5.2 Registrácia používateľa
+Komponent Register obsahuje registračný formulár a implementuje klientsku validáciu vstupov. Používateľské meno musí spĺňať minimálnu dĺžku troch alfanumerických znakov, e-mailová adresa je overovaná základnou validáciou formátu a heslo musí obsahovať minimálne osem znakov vrátane písmena a čísla. Po úspešnej registrácii je používateľ automaticky presmerovaný na stránku prihlásenia, pričom informácia o úspešnej registrácii je odovzdaná prostredníctvom navigačného stavu a následne zobrazená formou notifikačnej správy.
+
+![Register Page](img/frontend_register.jpg)
+
+5.3 Prihlásenie používateľa
+Komponent Login realizuje prihlasovanie používateľov prostredníctvom formulára s klientskou validáciou vstupov. Po odoslaní formulára sa vykoná HTTP požiadavka na backend endpoint /login. V prípade úspešného prihlásenia sa zobrazí notifikačná správa a následne sa aktualizuje stav používateľa v hlavnom komponente App, pričom používateľské údaje a autentifikačný token sú uložené do localStorage. Komponent zároveň ošetruje chybové stavy, ako sú neplatné prihlasovacie údaje alebo nedostupnosť servera, a informuje o nich používateľa prostredníctvom notifikácií.
+
+![Login Page](img/frontend_login.jpg)
+
+
+5.4 Nahrávanie a vizuálne spracovanie dokumentov
+Komponent Upload predstavuje jednu z kľúčových funkcionalít frontendu, keďže priamo sprostredkúva jadro systému. Používateľ má možnosť vybrať súbor prostredníctvom systémového dialógového okna alebo pomocou drag & drop interakcie a následne ho odoslať na server pomocou objektu FormData. Po spracovaní dokumentu backendovou službou sa používateľovi zobrazí výsledok analýzy vrátane informácie o tom, či ide o historický dokument.
+
+![Upload Page](img/frontend_upload.jpg)
+
+V prípade obrazových súborov je po úspešnom nahratí zobrazený náhľad dokumentu, nad ktorým môže používateľ interaktívne vytvárať, presúvať a meniť veľkosť ohraničujúcich rámcov reprezentujúcich vybrané oblasti dokumentu. Táto funkcionalita umožňuje aktívnu interakciu používateľa s dokumentom a vytvára priestor pre ďalšie spracovanie na backendovej alebo AI strane systému.
+
+![Upload Page with Image Preview](img/frontend_upload_preview.jpg)
+
+
+5.5 Správa dokumentov používateľa
+Komponent DocumentsList slúži na zobrazenie a správu dokumentov patriacich prihlásenému používateľovi. Po načítaní komponentu sa prostredníctvom backend API získajú dokumenty priradené k aktuálnemu používateľovi a zobrazia sa v prehľadnom mriežkovom rozložení. Používateľ má možnosť jednotlivé dokumenty stiahnuť alebo odstrániť zo systému, pričom pred odstránením dokumentu je zobrazené potvrdzovacie modálne okno. O výsledku každej operácie je používateľ informovaný prostredníctvom notifikačných správ.
+
+
+
+6 Štylizácia a používateľské rozhranie
+Globálne štýly definované v súbore App.css zabezpečujú základný layout aplikácie, vrátane hlavičky, navigácie, hlavného obsahu a päty. Obsah aplikácie je centrovaný a obmedzený na maximálnu šírku, čím sa zvyšuje čitateľnosť a prehľadnosť používateľského rozhrania. Lokálne štýly v súboroch Upload.css a DocumentsList.css definujú vizuálnu podobu nahrávacieho formulára, zoznamu dokumentov, modálnych okien a interaktívnych prvkov, pričom dôraz je kladený na responzívnosť a používateľský komfort.
+
+7 Konfigurácia projektu a spúšťanie
+Konfiguračný súbor package.json obsahuje definíciu závislostí, skripty pre spustenie vývojového prostredia, vytvorenie produkčného buildu a spúšťanie testov, ako aj konfiguráciu cieľových prehliadačov. Súvisiace správanie build procesu a vývojového servera je spravované prostredníctvom react-scripts. Súbor package-lock.json uzamyká presné verzie závislostí, čím zabezpečuje reprodukovateľnosť vývojového prostredia v rámci tímu.
+Súbor .gitignore definuje, ktoré súbory a priečinky sa nezahŕňajú do Git repozitára, čím sa predchádza verzovaniu generovaných súborov a zbytočnému zväčšovaniu repozitára. Dockerfile.dev slúži na spustenie frontendu vo vývojovom kontajneri a zabezpečuje jednotné vývojové prostredie nezávislé od konfigurácie operačného systému.
+
+8 Komunikácia s backendom
+Frontend komunikuje s backendovou službou prostredníctvom REST API, pričom realizuje registráciu a prihlásenie používateľov pomocou JSON požiadaviek a nahrávanie dokumentov pomocou multipart/form-data. Z architektonického hľadiska je dôležité, že frontend je oddelený od AI modulov a získava už spracované výsledky prostredníctvom backendovej vrstvy, ktoré následne iba vizualizuje používateľovi, čo je v súlade s princípom separácie zodpovedností v systéme.
+
+Použité zdroje
+[1] React Documentation. [online]. Dostupné na: https://react.dev/ [cit. 16. 1. 2026].
+[2] React Router Documentation. [online]. Dostupné na: https://reactrouter.com/  [cit. 16. 1. 2026].
+[3] React-Toastify Documentation. [online]. Dostupné na: https://fkhadra.github.io/react-toastify/introduction/  [cit. 16. 1. 2026].
+[4] Create React App Documentation – Getting Started. [online]. Dostupné na: https://create-react-app.dev/docs/getting-started/  [cit. 16. 1. 2026].
