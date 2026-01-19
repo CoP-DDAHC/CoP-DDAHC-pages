@@ -1,0 +1,105 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[slovak]{babel}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{hyperref}
+
+% Nastavenie hlavičky a päty
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Zápisnica}
+\fancyhead[R]{\today}
+\fancyfoot[C]{\thepage\ / \pageref{LastPage}}
+
+% Začiatok dokumentu
+\begin{document}
+
+\subsubsection{Rozšírenie datasetu a nové BE/FE funkcionality – 13. novembra 2025}
+
+\textbf{Dátum:} 13. novembra 2025 \\
+\textbf{Čas:} 12:00 – 13:00 \\
+\textbf{Umiestnenie:} A208, FEI STU / Discord (online) \\
+\textbf{Zapisovateľ:} Bc. Juraj Hušek
+
+\vspace{0.5cm}
+\textbf{Účastníci:}
+\begin{itemize}
+    \item Bc. Michal Balogh – ML/AI Engineer
+    \item Bc. Juraj Hušek – Backend Developer (online)
+    \item Bc. Ján Osadský – Backend Developer (online)
+    \item Bc. Fridrich Molnár – Frontend \& Server Developer
+    \item Bc. Zoltán Renczes – Frontend Developer
+\end{itemize}
+
+\textbf{Vedúci tímového projektu:} Ing. Stanislav Marochok
+
+\vspace{0.5cm}
+\textbf{Program stretnutia:}
+\begin{enumerate}
+    \item Odprezentovanie pokroku v implementácii
+    \item Trénovanie na verejných datasetoch rukou písaného textu
+    \item Segmentácia viet na slová
+    \item Rozšírenie datasetu
+\end{enumerate}
+
+\vspace{0.5cm}
+\textbf{Diskusia a rozhodnutia:}
+
+\paragraph{1. Odprezentovanie pokroku v implementácii}
+
+\textbf{Backend – nové funkcionality} \\
+Bc. Juraj Hušek implementoval kompletné dokumentové API:
+\begin{itemize}
+    \item \texttt{GET /documents/user/\{user\_id\}} – zoznam dokumentov používateľa
+    \item \texttt{GET /documents/\{document\_id\}} – načítanie dokumentu
+    \item \texttt{DELETE /documents/\{document\_id\}} – bezpečné zmazanie dokumentu (iba vlastník)
+    \item \texttt{GET /documents} – stránkovaný zoznam všetkých dokumentov
+    \item \texttt{GET /documents/\{document\_id\}/download} – stiahnutie dokumentu
+    \item všetky GET endpointy vracajú aj \textbf{thumbnail náhľady}
+\end{itemize}
+Nový endpoint \texttt{POST /preprocess/\{document\_id\}} posiela dokument na AI service na predspracovanie, výsledok sa vracia ako \texttt{StreamingResponse}, dostupné len pre autentifikovaných používateľov.
+
+Opravená funkcionalita nahrávania dokumentov – dokumenty sa spoľahlivo ukladajú do databázy, generujú sa changelog záznamy a korektne sa ukladá informácia o vlastníkovi dokumentu.
+
+\textbf{Frontend – vylepšenia} \\
+Bc. Fridrich Molnár implementoval dragovateľné a resizovateľné bounding boxy v časti Upload, realtime vytváranie nového bounding boxu, toast notifikácie zobrazujúce výsledok akcií. Konfigurácia frontendu bola doplnená o upravené CORS nastavenia a aktualizované proxy URL.
+
+\paragraph{2. Trénovanie na verejných datasetoch rukou písaného textu}
+Bc. Michal Balogh informoval o postupe trénovania modelu AI service na veľkých verejných datasetoch rukou písaného textu. Cieľom je natrénovať základný model na množstve ručne písaných ukážok, následne finetuning na vlastnom datasete anotovaných historických dokumentov.
+
+\paragraph{3. Segmentácia viet na slová}
+Vedúci projektu Ing. Stanislav Marochok pokračoval vo výskume verejných datasetov s anotáciami na úrovni viet, ktoré spracováva na úroveň slov. Cieľom je porovnať sentence-level a word-level granularitu pri trénovaní.
+
+\paragraph{4. Rozšírenie datasetu}
+Diskutovalo sa o potrebe rozšírenia datasetu anotovaných historických dokumentov pre zvýšenie úspešnosti modelu.
+
+\vspace{0.5cm}
+\textbf{Prijaté rozhodnutia:}
+\begin{itemize}
+    \item Pokračovať v trénovaní modelov na verejných datasetoch.
+    \item Testovať alternatívne formy predspracovania.
+    \item Nové backendové a frontendové funkcionality sa budú ďalej stabilizovať a vyvíjať.
+    \item Dataset anotovaných historických dokumentov sa rozšíri.
+\end{itemize}
+
+\vspace{0.5cm}
+\textbf{Úlohy do nasledujúceho stretnutia:}
+\begin{itemize}
+    \item Bc. Michal Balogh: Pokračovať v trénovaní na verejných datasetoch, pripraviť finetuning a anotovať ďalšie historické dokumenty
+    \item Bc. Juraj Hušek: Pokračovať v implementácii API a anotovať ďalšie historické dokumenty
+    \item Bc. Ján Osadský: Pokračovať v implementácii API
+    \item Bc. Fridrich Molnár: Pracovať na vylepšení UI/UX a anotovacieho nástroja
+    \item Bc. Zoltán Renczes: Pracovať na vylepšení UI/UX a anotovacieho nástroja
+\end{itemize}
+
+\vspace{0.5cm}
+\textbf{Nasledujúce stretnutie:} \\
+Dátum: 20. novembra 2025 \\
+Čas: 12:00 \\
+Umiestnenie: Slovenská technická univerzita v Bratislave, Fakulta elektrotechniky a informatiky \\
+Miestnosť: A208, FEI STU
+
+\end{document}

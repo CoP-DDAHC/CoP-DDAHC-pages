@@ -1,0 +1,81 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[slovak]{babel}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{geometry}
+\geometry{top=2.5cm,bottom=2.5cm,left=2.5cm,right=2.5cm}
+
+\title{Zápisnica zo stretnutia}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\subsubsection{Stretnutie ohľadom Docker setupu a klasifikácie dokumentov – 9. októbra 2025}
+
+\textbf{Dátum:} 9. októbra 2025 \\
+\textbf{Čas:} 12:00 – 12:20 \\
+\textbf{Umiestnenie:} Slovenská technická univerzita v Bratislave, Fakulta elektrotechniky a informatiky \\
+\textbf{Miestnosť:} A208, FEI STU \\
+\textbf{Zapisovateľ:} Bc. Fridrich Molnár
+
+\vspace{0.5cm}
+\textbf{Účastníci:}
+\begin{itemize}
+    \item Bc. Michal Balogh – ML/AI Engineer
+    \item Bc. Juraj Hušek – Backend Developer (ospravedlnený)
+    \item Bc. Ján Osadský – Backend Developer (ospravedlnený)
+    \item Bc. Fridrich Molnár – Frontend \& Server Developer
+    \item Bc. Zoltán Renczes – Frontend Developer
+\end{itemize}
+
+\textbf{Vedúci tímového projektu:} Ing. Stanislav Marochok
+
+\vspace{0.5cm}
+\textbf{Program stretnutia:}
+\begin{enumerate}
+    \item Prehľad Docker setupu
+    \item Diskusia o klasifikácii dokumentov
+    \item Úlohy do nasledujúceho stretnutia
+\end{enumerate}
+
+\vspace{0.5cm}
+\textbf{Diskusia a rozhodnutia:}
+
+\paragraph{1. Docker setup}
+Účastníci zhodnotili aktuálny stav kontajnerov (backend, databáza, frontend, AI service). Všetky kontajnery sú prepojené a komunikujú správne. Diskutovalo sa o stabilite prostredia a možnostiach ďalšieho rozvoja serverovej časti. Zhodli sme sa, že setup je pripravený pre integráciu klasifikácie a frontend funkcionality.
+
+\paragraph{2. Klasifikácia dokumentov}
+Prebehla demonštrácia OCR a klasifikácie dokumentov. Systém dokáže rozpoznať dokument a zamietnuť všetko, čo nie je dokument. Diskutovalo sa o možnom nasadení tejto funkcionality do aplikácie a o spôsobe ukladania logov a výsledkov do databázy. Zhodli sme sa, že klasifikáciu je možné integrovať do aplikácie v najbližšom kroku.
+
+\paragraph{3. Plán nasledujúcich krokov}
+Prebehla diskusia o prioritách ďalšieho vývoja: integrácia klasifikácie, dokončenie frontendu podľa možností, návrh backend riešení, spustenie servera a sprístupnenie databázy pre ukladanie dokumentov a logov. Zhodli sme sa, že je potrebné pripraviť registráciu a prihlásenie používateľov a rozdeliť úlohy medzi členov tímu.
+
+\paragraph{Úlohy do nasledujúceho stretnutia}
+\begin{itemize}
+    \item Bc. Michal Balogh: Pokračovať v práci na klasifikácii a AI nástrojoch
+    \item Bc. Juraj Hušek: Navrhnúť backend riešenie a sprístupniť databázu
+    \item Bc. Ján Osadský: Implementácia backendovej funkcionality pre registráciu a prihlásenie
+    \item Bc. Fridrich Molnár: Dokončiť frontend – implementovať registráciu a prihlásenie a integrovať serverovú časť
+    \item Bc. Zoltán Renczes: Dolaďovanie vizuálneho rozloženia frontendu, optimalizácia UI/UX
+\end{itemize}
+
+\vspace{0.5cm}
+\textbf{Nasledujúce stretnutie:} \\
+Dátum: 23. októbra 2025 \\
+Čas: 16:00 \\
+Umiestnenie: Online
+
+\vspace{0.5cm}
+\textbf{Poznámky:}
+\begin{itemize}
+    \item Tím sa zhodol, že Docker setup a environment fungujú stabilne a sú pripravené na integráciu klasifikácie a frontendu.
+    \item OCR a klasifikácia dokumentov fungujú správne.
+    \item Tím sa dohodol na pravidelných konzultáciách a koordinácii pri integrácii frontendu a backendu, aby sa predišlo problémom a zabezpečila sa hladká implementácia ďalších funkcionalít.
+\end{itemize}
+
+\end{document}

@@ -1,0 +1,85 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[slovak]{babel}
+\usepackage{enumitem}
+\usepackage{amsmath}
+
+\title{Zápisnica zo stretnutia tímu}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\subsubsection{Predspracovanie a ukladanie dát – 6. novembra 2025}
+
+\textbf{Dátum:} 6. novembra 2025 \\
+\textbf{Čas:} 12:00 – 13:00 \\
+\textbf{Umiestnenie:} Unispace, FEI STU \\
+\textbf{Zapisovateľ:} Bc. Juraj Hušek
+
+\vspace{0.5cm}
+\textbf{Účastníci:}
+\begin{itemize}
+    \item Bc. Michal Balogh – ML/AI Engineer
+    \item Bc. Juraj Hušek – Backend Developer
+    \item Bc. Ján Osadský – Backend Developer
+    \item Bc. Fridrich Molnár – Frontend \& Server Developer
+    \item Bc. Zoltán Renczes – Frontend Developer
+\end{itemize}
+
+\textbf{Vedúci tímového projektu:} Ing. Stanislav Marochok
+
+\vspace{0.5cm}
+\textbf{Program stretnutia:}
+\begin{enumerate}
+    \item Odprezentovanie pokroku v implementácii
+    \item Aktualizácia vývoja trénovacej pipeline pre kľúče
+    \item Diskusia o ukladaní dokumentov do databázy a na server
+    \item Diskusia o predspracovaní dát a jeho vplyve na výsledky
+\end{enumerate}
+
+\vspace{0.5cm}
+\textbf{Diskusia a rozhodnutia:}
+
+\paragraph{1. Odprezentovanie pokroku v implementácii}
+Prebehlo odprezentovanie nového backend endpointu \texttt{/get-boxes/\{document\_id\}}, ktorý pre testovacie účely vracia náhodný zoznam bounding boxov pre historický dokument. Endpoint je navrhnutý tak, aby po pripravení YOLO modelu bolo možné vrátiť bounding boxy nájdené modelom. Na strane AI service bol implementovaný nový endpoint \texttt{/preprocess-image} pripravený na predspracovanie uploadnutých historických dokumentov.
+
+\paragraph{2. Aktualizácia vývoja trénovacej pipeline pre kľúče}
+Vedúci tímového projektu informoval o dokončení trénovacej pipeline pre kľúče, ktorá umožňuje spracovanie anotácií, konverziu na YOLO dataset a trénovanie modelov. Pipeline umožňuje trénovanie na multi-class, all-class alebo single-class datasetoch. Zistené bolo, že trénovanie na single-class datasetoch dáva lepšie výsledky ako trénovanie na všetkých triedach naraz.
+
+\paragraph{3. Diskusia o ukladaní dokumentov do databázy a na server}
+Diskutovalo sa o spôsobe ukladania dokumentov – či ukladať binárne dáta priamo do databázy alebo ukladať súbory na server a v databáze uchovávať len prepojenia. Diskutované boli výhody a nevýhody oboch prístupov, s dôrazom na škálovateľnosť a bezpečnosť. Zvažovalo sa ohraničenie počtu dokumentov pre užívateľa.
+
+\paragraph{4. Diskusia o predspracovaní dát a jeho vplyve na výsledky}
+Diskutovalo sa o tom, prečo predspracovanie dát zhoršuje výsledky. Zvažovali sa faktory ako odstránenie šumu, strata informácií pri binarizácii, resizing obrázkov a otočenie dokumentov.
+
+\vspace{0.5cm}
+\textbf{Prijaté rozhodnutia:}
+\begin{itemize}
+    \item Pre testovacie účely sa ponecháva ukladanie dokumentov v databáze.
+    \item Vypracovať analýzu ukladania obrázkov na serveri vs. v databáze, zohľadniť bezpečnosť, škálovateľnosť a náklady.
+    \item Zamerať sa na zistenie príčin zhoršenia výsledkov pri predspracovaní dát.
+    \item Zvážiť polo-automatické otočenie dokumentov, s možnosťou manuálnej úpravy užívateľom a zvážiť vypnutie shade correction pri predspracovaní.
+    \item Využiť natrénované modely pre urýchlenie anotovania.
+\end{itemize}
+
+\vspace{0.5cm}
+\textbf{Úlohy do nasledujúceho stretnutia:}
+\begin{itemize}
+    \item Bc. Michal Balogh: Rozšíriť dataset anotovaných dokumentov a pokračovať v práci na AI service
+    \item Bc. Juraj Hušek: Implementovať backend API endpointy pre prácu a manažment dokumentov a endpoint používajúci AI service preprocessing
+    \item Bc. Ján Osadský: Vypracovať analýzu ukladania obrázkov na serveri vs. v databáze, zohľadniť bezpečnostné aspekty, škálovateľnosť a náklady. Zahrnúť porovnanie s externými službami pre ukladanie obrázkov.
+    \item Bc. Fridrich Molnár: Implementovať vylepšenia anotačného nástroja a funkcionality pridané na backend
+    \item Bc. Zoltán Renczes: Implementovať vizuálne vylepšenia UI, rozšíriť dataset anotovaných dokumentov
+\end{itemize}
+
+\vspace{0.5cm}
+\textbf{Nasledujúce stretnutie:} \\
+Dátum: 13. novembra 2025 \\
+Čas: 12:00 \\
+Umiestnenie: Slovenská technická univerzita v Bratislave, Fakulta elektrotechniky a informatiky \\
+Miestnosť: A208, FEI STU
+
+\end{document}

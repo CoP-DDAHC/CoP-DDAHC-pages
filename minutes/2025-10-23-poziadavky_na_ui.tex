@@ -1,0 +1,105 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[slovak]{babel}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{hyperref}
+
+% Nastavenie hlavičky a pätičky
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Zápisnica}
+\fancyhead[R]{\today}
+\fancyfoot[C]{\thepage}
+
+\title{Zápisnica zo stretnutia tímu}
+\author{Ing. Stanislav Marochok}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section*{Kontrola postupu a požiadavky na UI – 23. októbra 2025}
+
+\textbf{Dátum:} 23. októbra 2025 \\
+\textbf{Čas:} 16:00 – 16:40 \\
+\textbf{Umiestnenie:} Online – Discord \\
+\textbf{Zapisovateľ:} Bc. Michal Balogh
+
+\vspace{0.5cm}
+\textbf{Účastníci:}
+\begin{itemize}
+    \item Bc. Michal Balogh – ML/AI Engineer
+    \item Bc. Juraj Hušek – Backend Developer
+    \item Bc. Ján Osadský – Backend Developer
+    \item Bc. Fridrich Molnár – Frontend \& Server Developer
+    \item Bc. Zoltán Renczes – Frontend Developer
+\end{itemize}
+
+\textbf{Vedúci tímového projektu:} Ing. Stanislav Marochok
+
+\vspace{0.5cm}
+\textbf{Program stretnutia:}
+\begin{enumerate}
+    \item Odprezentovanie pokroku v implementácii
+    \item Poznámky a požiadavky na implementované časti
+    \item Diskusia o požiadavkách na UI
+    \item Úlohy do nasledujúceho stretnutia
+\end{enumerate}
+
+\vspace{0.5cm}
+\textbf{Diskusia a rozhodnutia:}
+
+\paragraph{1. Integrácia odmietania nesprávnych dokumentov pomocou OCR}
+Prebehla demonštrácia OCR a klasifikácie dokumentov integrovaná do web aplikácie. EasyOCR malo veľa závislostí, ktoré sa museli stiahnuť do Docker kontajnera, čo spôsobilo veľký Docker image (cca 14GB). EasyOCR bolo nahradené za skompilovaný Tesseract, čím sa build time znížil z 10 minút na 30 sekúnd a veľkosť image-u z 14GB na 2GB. Presnosť detekcie sa zachovala, inferencia sa zrýchlila.
+
+\paragraph{2. Predstavenie základnej schémy pre databázu a nové API endpointy}
+Backend bol napojený na databázu so základnou schémou. Ukladanie nahratých dokumentov do databázy, diskusia o formáte uloženia. API endpointy a logika pre registráciu, login, odhlásenie, integrácia prihlasovania cez Google účet. Pre uložené dokumenty sa bude ukladať link na server, dokumenty budú rozšíriteľné na viacstranové, v databáze sa bude ukladať informácia o type dokumentu (šifra/klúč).
+
+\paragraph{3. Ukážka UI pre registráciu a prihlasenie}
+Prezentované základné UI pre registráciu, prihlásenie a upload dokumentov.
+
+\paragraph{4. Ukážka funkčného serveru na Raspberry Pi}
+Prebehla ukážka funkčného serveru na Raspberry Pi, ktorý beží ako lokálny server pre web aplikáciu, úspešne prepojený s databázou a backendom.
+
+\vspace{0.5cm}
+\textbf{Diskusia o požiadavkách na UI:}
+
+\paragraph{Požiadavky na anotačný nástroj}
+\begin{enumerate}
+    \item \textbf{Kopírovanie a paste anotácií s offsetom} – Možnosť duplikovať existujúce bounding boxy s automatickým posunutím, urýchlenie procesu anotácie pri opakujúcich sa prvkoch.
+    \item \textbf{Intuitívne rozširovanie anotačných bounding boxov} – Bočné steny sa majú dať rozširovať do boku, rohy do všetkých smerov, horná stena iba hore. Prirodzený spôsob manipulácie s anotáciami.
+    \item \textbf{Zlepšenie zoomovania obrázkov} – Implementácia zoomu ku kurzoru, vylepšenie systému približovania obrázkov, lepšia používateľská skúsenosť pri práci s detailami.
+    \item \textbf{Vizuálne vylepšenia interakcie} – Zmena kurzora zo šípky na ruku po aktivácii posúvania/manipulácie, jasná vizuálna indikácia aktívneho módu.
+\end{enumerate}
+
+\paragraph{Bezpečnostné opatrenia}
+\begin{enumerate}[resume]
+    \item \textbf{Ochrana proti automatizácii} – Implementácia ochrany proti botom (napr. CAPTCHA), zabezpečenie registračného a prihlasovacieho procesu.
+\end{enumerate}
+
+\paragraph{Dodatočné backend úlohy}
+\begin{enumerate}[resume]
+    \item \textbf{Email verifikácia} – Implementovať verifikáciu emailovej adresy pri registrácii, vytvoriť nové API endpointy pre verifikačný proces.
+\end{enumerate}
+
+\vspace{0.5cm}
+\textbf{Úlohy do nasledujúceho stretnutia:}
+\begin{itemize}
+    \item Michal Balogh: Predspracovanie nahratých dokumentov
+    \item Bc. Juraj Hušek: Implementovať nové API endpointy pre email verifikáciu a rozšíriť backend funkcionalitu
+    \item Bc. Ján Osadský: Dokončiť implementáciu backendovej funkcionality pre registráciu a prihlásenie, pridať email verifikáciu
+    \item Bc. Fridrich Molnár: Implementovať vylepšenia anotačného nástroja a integrovať serverovú časť
+    \item Bc. Zoltán Renczes: Implementovať vizuálne vylepšenia UI (zmena kurzora, zoom ku kurzoru) a optimalizácia UI/UX anotačného nástroja
+\end{itemize}
+
+\vspace{0.5cm}
+\textbf{Nasledujúce stretnutie:} \\
+Dátum: 31. októbra 2025 \\
+Čas: 14:00 \\
+Umiestnenie: Online – Discord
+
+\end{document}

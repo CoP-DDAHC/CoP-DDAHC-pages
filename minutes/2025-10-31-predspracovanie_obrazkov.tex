@@ -1,0 +1,91 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[slovak]{babel}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{xcolor}
+
+% Nastavenie farby odkazov
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=blue,
+    pdftitle={Zápisnica - Predspracovanie obrázkov},
+    pdfpagemode=FullScreen,
+}
+
+% Definovanie farieb pre sekcie
+\titleformat{\section}
+  {\normalfont\Large\bfseries\color{blue}}{}{0em}{}
+\titleformat{\subsection}
+  {\normalfont\large\bfseries\color{blue}}{}{0em}{}
+\titleformat{\subsubsection}
+  {\normalfont\normalsize\bfseries\color{blue}}{}{0em}{}
+
+\begin{document}
+
+\subsubsection{Predspracovanie obrázkov – 31. októbra 2025}
+
+\textbf{Dátum:} 31. októbra 2025 \\
+\textbf{Čas:} 14:00 – 14:45 \\
+\textbf{Umiestnenie:} Online – Discord \\
+\textbf{Zapisovateľ:} Bc. Zoltán Renczes
+
+\vspace{0.5cm}
+\textbf{Účastníci:}
+\begin{itemize}
+    \item Bc. Michal Balogh – ML/AI Engineer
+    \item Bc. Juraj Hušek – Backend Developer
+    \item Bc. Ján Osadský – Backend Developer
+    \item Bc. Fridrich Molnár – Frontend \& Server Developer
+    \item Bc. Zoltán Renczes – Frontend Developer
+\end{itemize}
+
+\textbf{Vedúci tímového projektu:} Ing. Stanislav Marochok
+
+\vspace{0.5cm}
+\textbf{Program stretnutia:}
+\begin{enumerate}
+    \item Predspracovanie datasetu pre YOLO
+    \item Predspracovanie obrazových dát
+    \item Overenie e-mailu a validácia (backend)
+    \item Aktualizácia frontendu
+\end{enumerate}
+
+\vspace{0.5cm}
+\textbf{Diskusia a rozhodnutia:}
+
+\paragraph{1. Prezentovanie predspracovania datasetu pre YOLO}
+Vedúci projektu odprezentoval skript \texttt{preprocess\_yolo\_datatset.py}, ktorý slúži na automatické predspracovanie datasetu pre trénovanie modelu YOLO. Skript upravuje kvalitu obrázkov a zachováva YOLO anotácie bounding boxov. Výsledkom je nová verzia datasetu v rovnakej štruktúre (train/val/test), pripravená na efektívnejšie trénovanie modelu.
+
+\paragraph{2. Predspracovanie obrázkových dát v projekte}
+Začala implementácia predspracovania obrazových dát. Práca je v počiatočnej fáze, cieľom je zabezpečiť správne spracovanie vstupných obrazov.
+
+\paragraph{3. Overenie e-mailu a validácia vstupov na strane backendu}
+Do backendu bola pridaná funkcionalita overenia e-mailovej adresy pri registrácii používateľov (okrem Google OAuth). Implementácia zahŕňa generovanie bezpečného JWT tokenu, odosielanie overovacieho e-mailu cez SMTP (s využitím premenných v súbore \texttt{.env}) a spracovanie verifikácie na koncovom bode \texttt{/verify-email/\{token\}} s presmerovaním na frontend. Po úspešnom overení sa používateľ označí ako overený.
+
+Doplnená bola backendová validácia vstupných údajov pri registrácii, zosúladená s kritériami validácie na frontende. Aktualizovaná bola konfigurácia súboru \texttt{.env} podľa usmernení v dokumente \textit{ENV\_GUIDE} a referenčného súboru \texttt{.env\_example}.
+
+\paragraph{4. Aktualizácie frontend časti aplikácie}
+Do projektu bola pridaná komponenta \texttt{Home.jsx} a aktualizované viaceré frontendové komponenty na zlepšenie funkcionality prihlasovania a registrácie. Implementované boli toast notifikácie pre systémové správy a zobrazovanie nahraných súborov, ktoré sú dostupné na prehliadnutie priamo z používateľského rozhrania. Doplnená bola implementácia routera pre navigáciu medzi stránkami aplikácie.
+
+\vspace{0.5cm}
+\textbf{Úlohy do nasledujúceho stretnutia:}
+\begin{itemize}
+    \item Michal Balogh: Predspracovanie nahratých dokumentov
+    \item Bc. Juraj Hušek: Implementovať uloženie obrázkov v databáze na strane backendu
+    \item Bc. Ján Osadský: Implementovať zobrazenie, načítanie a správu uložených obrázkov
+    \item Bc. Fridrich Molnár: Implementovať vylepšenia anotačného nástroja a integrovať serverovú časť
+    \item Bc. Zoltán Renczes: Implementovať vizuálne vylepšenia UI (zmena kurzora, zoom ku kurzoru) a optimalizácia UI/UX anotačného nástroja
+\end{itemize}
+
+\vspace{0.5cm}
+\textbf{Nasledujúce stretnutie:} \\
+Dátum: 6. novembra 2025 \\
+Čas: 12:00 \\
+Umiestnenie: Unispace
+
+\end{document}
