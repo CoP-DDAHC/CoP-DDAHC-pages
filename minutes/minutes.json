@@ -33,5 +33,15 @@
     "date": "2025-11-13",
     "title": "Rozšírenie datasetu a nové BE/FE funkcionality",
     "file": "2025-11-13-rozsirenie_datasetu_nove_funkcionality.md"
+  },
+  {
+    "date": "2026-02-19",
+    "title": "Pipeline workflow, logy, role",
+    "file": "2026-02-19-pipeline_funkcionalita.md"
+  },
+  {
+    "date": "2026-03-19",
+    "title": "Finalizácia požiadaviek",
+    "file": "2026-03-19-finalizácia požiadaviek.md"
   }
 ]
