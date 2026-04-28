@@ -1,102 +1,164 @@
 \section{Implementácia frontendu}
 
-Frontendová časť systému bola implementovaná ako samostatná webová aplikácia postavená na knižnici React. Frontend zabezpečuje používateľské rozhranie, spracovanie vstupov od používateľa, ako sú registrácia, prihlásenie, nahrávanie a správa dokumentov, ako aj komunikáciu s backendovou službou prostredníctvom REST API. V architektúre systému frontend predstavuje prezentačnú vrstvu, ktorá sprostredkúva interakciu používateľa s aplikačnou logikou a službami implementovanými na serverovej strane.
+Frontendová časť systému bola implementovaná ako samostatná webová aplikácia postavená na knižnici React. Frontend zabezpečuje používateľské rozhranie pre celý pracovný postup: registráciu, prihlásenie, správu dokumentov a najmä šesťkrokové pipeline rozhranie pre poloautomatické spracovanie historických šifrovacích dokumentov. Komunikácia s backendovou službou prebieha výhradne cez REST API.
 
-Z hľadiska tímového projektu frontendová časť tvorí samostatný modul, ktorý je vyvíjaný nezávisle od backendovej a AI časti systému. Takéto rozdelenie umožňuje paralelný vývoj jednotlivých komponentov, jednoduchšie testovanie a bezproblémové nasadenie aplikácie v kontajnerizovanom prostredí.
+Z hľadiska tímového projektu frontendová časť tvorí samostatný modul vyvíjaný nezávisle od backendovej a AI časti systému. Takéto rozdelenie umožňuje paralelný vývoj jednotlivých komponentov, jednoduchšie testovanie a bezproblémové nasadenie aplikácie v kontajnerizovanom prostredí.
 
 \subsection{Použité technológie}
 
-Frontend bol implementovaný pomocou knižnice React, ktorá umožňuje tvorbu používateľského rozhrania na základe komponentového princípu. Navigácia medzi jednotlivými obrazovkami aplikácie, ako sú domovská stránka, registrácia, prihlásenie, nahrávanie dokumentov a správa dokumentov používateľa, je realizovaná pomocou knižnice React Router, vďaka čomu je aplikácia implementovaná ako Single Page Application bez potreby opätovného načítania stránky.
-
-Na zobrazovanie používateľských notifikácií, napríklad pri úspešnej registrácii, prihlásení alebo chybových stavoch, je použitá knižnica React-Toastify. Build a vývojové skripty aplikácie sú riešené prostredníctvom nástroja Create React App, konkrétne balíka react-scripts. Zoznam všetkých použitých závislostí je definovaný v súbore package.json, ktorý obsahuje okrem iného React, React DOM, React Router DOM, react-scripts a react-toastify.
+Frontend bol implementovaný pomocou knižnice \textbf{React}~\cite{react} s využitím \textbf{React Router} pre navigáciu, vďaka čomu je aplikácia implementovaná ako Single Page Application (SPA) bez potreby opätovného načítania stránky. Na zobrazovanie používateľských notifikácií je použitá knižnica \textbf{React-Toastify}. Ikony v rozhraní sú z knižníc \textbf{React Icons} (sady Material Design Icons a Feather Icons). Build a vývojové skripty aplikácie sú riešené prostredníctvom \textbf{Create React App} (balík react-scripts). Všetky závislosti sú definované v súbore \texttt{package.json}.
 
 \subsection{Architektúra frontendu}
 
-Frontend je navrhnutý ako SPA aplikácia, v ktorej hlavný komponent App plní úlohu centrálneho riadiaceho prvku. Tento komponent spravuje autentifikačný stav používateľa, zabezpečuje navigáciu v rámci aplikácie, definuje smerovanie na jednotlivé stránky a zároveň obmedzuje prístup ku chránenej funkcionalite, ako je nahrávanie dokumentov a správa používateľských dokumentov, pre neprihlásených používateľov.
+Frontend je navrhnutý ako SPA aplikácia. Hlavný komponent \texttt{App} spravuje autentifikačný stav používateľa, definuje trasy a obmedzuje prístup k chráneným stránkam pre neprihlásených používateľov. Pre pipeline route (\texttt{/upload}) je render zabalený do špeciálneho plnoobrazovkového layoutu bez bočnej karty; pre ostatné trasy je obsah zobrazený v centrovanej karte.
 
-Aplikácia je implementovaná pomocou komponentov, pričom jednotlivé pohľady aplikácie sú reprezentované samostatnými komponentmi. Domovská stránka slúži ako úvodný informačný pohľad, komponent Register zabezpečuje registráciu nových používateľov, komponent Login realizuje prihlasovanie do systému, komponent Upload umožňuje nahrávanie a vizuálne spracovanie dokumentov a komponent DocumentsList slúži na zobrazenie a správu dokumentov patriacich prihlásenému používateľovi.
+Globálny stav pipeline (aktuálny krok, obrázok, bounding boxy, výsledky) je riadený cez React Context (\texttt{PipelineContext} a hook \texttt{usePipelineStep}), čo umožňuje zdieľanie stavu naprieč všetkými krokmi bez \textit{prop drilling}.
 
-Vzhľad používateľského rozhrania je riešený kombináciou globálnych štýlov definovaných v súbore App.css, ktoré zabezpečujú základný layout aplikácie, navigáciu a vizuálnu konzistenciu, a lokálnych štýlov v súboroch Upload.css a DocumentsList.css, ktoré sú určené pre špecifický dizajn formulára na nahrávanie dokumentov, zobrazenie zoznamu dokumentov a modálne dialógové okná.
-
-\subsection{Inicializácia aplikácie a vstupné súbory}
-
-Súbor public/index.html predstavuje statickú HTML kostru aplikácie a obsahuje koreňový DOM element, do ktorého React aplikácia dynamicky renderuje celý obsah. Súbor src/index.js zabezpečuje inicializáciu React aplikácie pomocou funkcie createRoot a vykreslenie hlavného komponentu App. Okrem toho definuje aj jednoduchý statický komponent hlavičky, čím vytvára jednotné vizuálne orámovanie aplikácie.
+Autentifikačný token (JWT) je po prihlásení uložený do \texttt{localStorage} a pri každom API volaní je odosielaný v hlavičke \texttt{Authorization: Bearer <token>}. Pri načítaní aplikácie sa token overuje volaním \texttt{GET /me}; ak je token neplatný, používateľ je odhlásený.
 
 \subsection{Smerovanie a riadenie prístupu}
 
-Hlavná logika navigácie je implementovaná v súbore App.js. React Router sa používa na definovanie jednotlivých trás aplikácie, pričom prístup k vybraným stránkam je podmienený stavom prihlásenia používateľa. Neprihlásený používateľ má prístup iba k domovskej stránke, registrácii a prihláseniu, zatiaľ čo nahrávanie dokumentov a správa dokumentov používateľa sú dostupné výhradne po úspešnom prihlásení.
+Trasy aplikácie sú definované pomocou React Router:
 
-Frontend pracuje s autentifikačným stavom tak, že po prihlásení ukladá používateľské údaje a autentifikačný token do úložiska localStorage. Pri načítaní aplikácie sa stav prihláseného používateľa obnovuje pomocou hooku useEffect a pri odhlásení sú tieto údaje z localStorage odstránené. Tento prístup zvyšuje použiteľnosť aplikácie tým, že používateľ ostáva prihlásený aj po obnovení stránky.
+\begin{itemize}
+    \item \texttt{/} – domovská stránka,
+    \item \texttt{/register} – registrácia (len neprihlásený),
+    \item \texttt{/login} – prihlásenie (len neprihlásený),
+    \item \texttt{/upload} – pipeline rozhranie (len prihlásený),
+    \item \texttt{/documents} – správa dokumentov (len prihlásený),
+    \item \texttt{/profile} – profil používateľa (len prihlásený),
+    \item \texttt{/admin/users} – správa používateľov (len admin),
+    \item \texttt{/admin/documents} – správa dokumentov (len admin).
+\end{itemize}
 
 \subsection{Implementácia používateľských funkcionalít}
 
 \subsubsection{Domovská stránka}
 
-Komponent Home slúži ako úvodný informačný pohľad aplikácie. Zobrazuje privítanie používateľa a zároveň spracúva jednorazové notifikácie po úspešnej registrácii alebo prihlásení. Na tento účel využíva sessionStorage v kombinácii s knižnicou React-Toastify, čím sa zabezpečuje, že notifikačné správy sa zobrazia iba raz.
+Komponent \texttt{Home} slúži ako úvodný informačný pohľad. Zobrazuje privítanie a spracúva jednorazové notifikácie po registrácii alebo prihlásení pomocou \texttt{sessionStorage} a React-Toastify.
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.8\textwidth]{frontend_home.jpg}
-    \caption{Domovská stránka aplikácie}
-    \label{fig:frontend_home}
-\end{figure}
+% [PLACEHOLDER: screenshot domovskej stránky — frontend_home.png]
 
-\subsubsection{Registrácia používateľa}
+\subsubsection{Registrácia a prihlásenie}
 
-Komponent Register obsahuje registračný formulár a implementuje klientsku validáciu vstupov. Používateľské meno musí spĺňať minimálnu dĺžku troch alfanumerických znakov, e-mailová adresa je overovaná základnou validáciou formátu a heslo musí obsahovať minimálne osem znakov vrátane písmena a čísla. Po úspešnej registrácii je používateľ automaticky presmerovaný na stránku prihlásenia, pričom informácia o úspešnej registrácii je odovzdaná prostredníctvom navigačného stavu a následne zobrazená formou notifikačnej správy.
+Komponent \texttt{Register} implementuje klientsku validáciu vstupov (min. 3 alfanumerické znaky pre meno, min. 8 znakov s číslicou pre heslo). Po úspešnej registrácii je odoslaný overovací e-mail; aktivácia účtu je podmienkou prihlásenia.
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.8\textwidth]{frontend_register.jpg}
-    \caption{Registračná stránka}
-    \label{fig:frontend_register}
-\end{figure}
+Komponent \texttt{Login} realizuje prihlasovanie emailom/heslom aj Google OAuth. Pri Google prihlásení backend vráti JWT token ako URL parameter, ktorý frontend zachytí pri načítaní a uloží do \texttt{localStorage}.
 
-\subsubsection{Prihlásenie používateľa}
+% [PLACEHOLDER: screenshot registrácie — frontend_register.png]
+% [PLACEHOLDER: screenshot prihlásenia — frontend_login.png]
 
-Komponent Login realizuje prihlasovanie používateľov prostredníctvom formulára s klientskou validáciou vstupov. Po odoslaní formulára sa vykoná HTTP požiadavka na backend endpoint /login. V prípade úspešného prihlásenia sa zobrazí notifikačná správa a následne sa aktualizuje stav používateľa v hlavnom komponente App, pričom používateľské údaje a autentifikačný token sú uložené do localStorage. Komponent zároveň ošetruje chybové stavy, ako sú neplatné prihlasovacie údaje alebo nedostupnosť servera, a informuje o nich používateľa prostredníctvom notifikácií.
+\subsubsection{Profil používateľa}
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.8\textwidth]{frontend_login.jpg}
-    \caption{Prihlasovacia stránka}
-    \label{fig:frontend_login}
-\end{figure}
+Komponent \texttt{Profile} umožňuje zmenu používateľského mena a hesla (vyžaduje potvrdenie starého hesla) a zobrazuje históriu aktivít (prihlásenia, nahrania, úpravy dokumentov) načítanú z endpointu \texttt{GET /me/activity}.
 
-\subsubsection{Nahrávanie a vizuálne spracovanie dokumentov}
+\subsubsection{Správa dokumentov}
 
-Komponent Upload predstavuje jednu z kľúčových funkcionalít frontendu, keďže priamo sprostredkúva jadro systému. Používateľ má možnosť vybrať súbor prostredníctvom systémového dialógového okna alebo pomocou drag \& drop interakcie a následne ho odoslať na server pomocou objektu FormData. Po spracovaní dokumentu backendovou službou sa používateľovi zobrazí výsledok analýzy vrátane informácie o tom, či ide o historický dokument.
+Komponent \texttt{DocumentsList} zobrazuje tri sekcie dokumentov: vlastné (\textit{My Documents}), zdieľané (\textit{Shared with me}) a verejné (\textit{Public documents}). Pre každý dokument je možné:
+\begin{itemize}
+    \item otvoriť ho v pipeline rozhraní (tlačidlo \textit{Open in Pipeline}),
+    \item stiahnuť pôvodný súbor,
+    \item zmeniť úroveň prístupu (\texttt{private} / \texttt{public} / \texttt{shared}),
+    \item zdieľať s konkrétnym používateľom vyhľadaným podľa mena,
+    \item odstrániť (s potvrdením v modálnom okne).
+\end{itemize}
+Vyhľadávanie prebieha lokálne filtrovaním načítaných dokumentov podľa názvu.
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.8\textwidth]{frontend_upload.jpg}
-    \caption{Stránka nahrávania dokumentov}
-    \label{fig:frontend_upload}
-\end{figure}
+% [PLACEHOLDER: screenshot správy dokumentov — frontend_documents.png]
 
-V prípade obrazových súborov je po úspešnom nahratí zobrazený náhľad dokumentu, nad ktorým môže používateľ interaktívne vytvárať, presúvať a meniť veľkosť ohraničujúcich rámcov reprezentujúcich vybrané oblasti dokumentu. Táto funkcionalita umožňuje aktívnu interakciu používateľa s dokumentom a vytvára priestor pre ďalšie spracovanie na backendovej alebo AI strane systému.
+\subsubsection{Administrácia}
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.8\textwidth]{frontend_upload_preview.jpg}
-    \caption{Náhľad nahraného dokumentu s interaktívnymi ohraničujúcimi rámcami}
-    \label{fig:frontend_upload_preview}
-\end{figure}
+Pre používateľov s rolou \texttt{admin} sú k dispozícii stránky \texttt{AdminUsers} a \texttt{AdminDocuments}, ktoré poskytujú prehľad a správu všetkých používateľov a dokumentov v systéme.
 
-\subsubsection{Správa dokumentov používateľa}
+\subsection{Pipeline rozhranie}
 
-Komponent DocumentsList slúži na zobrazenie a správu dokumentov patriacich prihlásenému používateľovi. Po načítaní komponentu sa prostredníctvom backend API získajú dokumenty priradené k aktuálnemu používateľovi a zobrazia sa v prehľadnom mriežkovom rozložení. Používateľ má možnosť jednotlivé dokumenty stiahnuť alebo odstrániť zo systému, pričom pred odstránením dokumentu je zobrazené potvrdzovacie modálne okno. O výsledku každej operácie je používateľ informovaný prostredníctvom notifikačných správ.
+Jadrom frontendu je \textbf{šesťkrokové pipeline rozhranie} pre spracovanie šifrovacích dokumentov, dostupné na trase \texttt{/upload}. Jednotlivé kroky sú zobrazené v hornej lište (\texttt{PipelineStepsBar}); po dokončení kroku sa odomkne nasledujúci a používateľ sa môže vrátiť k ľubovoľnému odomknutému kroku.
 
-\subsection{Štylizácia a používateľské rozhranie}
+Všetky kroky zdieľajú dvojstĺpcový layout: vľavo je plnoobrazovkové zobrazenie dokumentu (canvas s bounding boxmi), vpravo je bočný panel s ovládacími prvkami.
 
-Globálne štýly definované v súbore App.css zabezpečujú základný layout aplikácie, vrátane hlavičky, navigácie, hlavného obsahu a päty. Obsah aplikácie je centrovaný a obmedzený na maximálnu šírku, čím sa zvyšuje čitateľnosť a prehľadnosť používateľského rozhrania. Lokálne štýly v súboroch Upload.css a DocumentsList.css definujú vizuálnu podobu nahrávacieho formulára, zoznamu dokumentov, modálnych okien a interaktívnych prvkov, pričom dôraz je kladený na responzívnosť a používateľský komfort.
+\subsubsection{Krok 1 – Upload}
+
+Komponent \texttt{UploadStep} umožňuje drag\,\&\,drop nahranie alebo výber súboru cez dialóg. Po odoslaní súboru na backend (\texttt{POST /analyze-document}) sa zobrazí výsledok OCR validácie: dokument je prijatý (badge \textit{Accepted}) alebo odmietnutý (badge \textit{Rejected}). V prípade odmietnutia môže používateľ nahrať iný súbor.
+
+% [PLACEHOLDER: screenshot UploadStep s prijatým dokumentom — pipeline_step1.png]
+
+\subsubsection{Krok 2 – Preprocessing}
+
+Komponent \texttt{PreprocessingStep} zobrazí náhľad dokumentu a bočný panel s nastaveniami predspracovania. Posuvníky rotácie (−45° až +45°), jasu a kontrastu sa odrážajú okamžite v náhľade pomocou CSS transformácií. Prepínače \textit{Auto Deskew}, \textit{Binarize}, \textit{Denoise}, \textit{Shade Correction} a \textit{Remove Speckles} spúšťajú serverové predspracovanie (\texttt{POST /preprocess-image}); výsledok sa zobrazí v náhľade. Tlačidlo \textit{Reset all} obnoví všetky nastavenia na predvolené hodnoty.
+
+% [PLACEHOLDER: screenshot PreprocessingStep — pipeline_step2.png]
+
+\subsubsection{Krok 3 – Detection}
+
+Komponent \texttt{DetectionStep} je najkomplexnejší krok. Po kliknutí na \textit{Run Detection} odošle predspracovaný obraz na backend (\texttt{POST /detect-boxes}), ktorý spustí YOLO inferenciu. Výsledné bounding boxy sa zobrazia na canvase farebne odlíšené podľa triedy.
+
+Bočný panel zobrazuje accordion zoznam tried (section / pair / element) s ich bounding boxmi. Pre každú triedu je možné vybrať vlastný model (používateľ si môže nahrať vlastné váhy cez \texttt{POST /me/yolo-models}); predvolene sa použije serverový model. Používateľ môže:
+\begin{itemize}
+    \item kliknutím na bounding box na canvase ho vybrať a zvýrazniť v paneli,
+    \item táhnutím posúvať alebo meniť veľkosť bounding boxov,
+    \item vymazávať boxy (tlačidlo \faTrash),
+    \item skrývať/zobrazovať triedy (ikona oka),
+    \item premenovávať triedy, pridávať nové vlastné triedy,
+    \item použiť \textit{Undo}/\textit{Redo} (história akcií).
+\end{itemize}
+Výsledky detekcie sú uložené do pipeline kontextu a prenesené do ďalšieho kroku.
+
+% [PLACEHOLDER: screenshot DetectionStep s bounding boxmi — pipeline_step3.png]
+
+\subsubsection{Krok 4 – OCR Review}
+
+Komponent \texttt{ReviewStep} zobrazuje detegované páry a ich elementy v hierarchickom zozname. Po kliknutí na \textit{Run OCR} odošle backend požiadavku na Tesseract OCR (\texttt{POST /ocr-elements}) pre každý element; výsledky sa zobrazia ako transkripcia pri každom bounding boxe.
+
+Používateľ môže:
+\begin{itemize}
+    \item reklasifikovať element na \textit{plain text}, \textit{cipher text} alebo \textit{symbol},
+    \item manuálne opraviť OCR transkripciu,
+    \item mazať alebo skrývať boxy.
+\end{itemize}
+Elementy sú automaticky zaradené do párov podľa geometrického prekryvu; párový zoznam je zoradený zvislo podľa polohy na dokumente.
+
+% [PLACEHOLDER: screenshot ReviewStep s OCR transkripciou — pipeline_step4.png]
+
+\subsubsection{Krok 5 – Symbol Match}
+
+Komponent \texttt{ExportStep} (krok 5) sa zameriava na \textit{cipher text} elementy. Po kliknutí na \textit{Match Symbols} odošle backend požiadavku na symbolové priradenie (\texttt{POST /match-symbols}). Každý element zobrazí:
+\begin{itemize}
+    \item farebný indikátor stavu zhody (\texttt{matched} – zelená, \texttt{possible} – žltá, \texttt{not\_found} – červená, \texttt{new\_symbol} – fialová),
+    \item najlepší kandidát z databázy s percentuálnou spoľahlivosťou,
+    \item rozbaľovací zoznam top-3 kandidátov pre manuálny výber.
+\end{itemize}
+Používateľ môže priradenie potvrdiť, opraviť alebo pridať manuálnu poznámku.
+
+% [PLACEHOLDER: screenshot ExportStep so symbolovým mapovaním — pipeline_step5.png]
+
+\subsubsection{Krok 6 – Export}
+
+Komponent \texttt{FinalExportStep} zostaví hierarchickú JSON štruktúru z bounding boxov (sekcie → páry → elementy) a zobrazí náhľad exportu. Tlačidlo \textit{Save to account} odošle výsledok na backend (\texttt{POST /export-pipeline}), kde sa uloží ako export dokumentu. Tlačidlo \textit{Download JSON} umožní priame stiahnutie súboru.
+
+Exportný JSON obsahuje verziu formátu, zoznam sekcií, párov mimo sekcií, nepriradených elementov a súhrnné štatistiky.
+
+% [PLACEHOLDER: screenshot FinalExportStep s JSON náhľadom — pipeline_step6.png]
+
+\subsubsection{BBoxCanvas – interaktívne kreslenie bounding boxov}
+
+Komponent \texttt{BBoxCanvas} je spoločný pre kroky 3–6 a zodpovedá za vykreslenie bounding boxov na SVG vrstve nad obrázkom dokumentu. Implementuje:
+\begin{itemize}
+    \item kreslenie nových boxov ťahaním myšou (kliknutie mimo existujúci box),
+    \item presúvanie boxov (ťahanie za vnútro),
+    \item zmenu veľkosti boxov (8 rukovätí na rohoch a hranách),
+    \item zvýraznenie hover/selected boxu,
+    \item škálovanie súradníc medzi zobrazenými pixelmi a reálnymi rozmermi obrázka.
+\end{itemize}
+
+\subsubsection{Správa stavu bounding boxov}
+
+Celý stav bounding boxov (poloha, veľkosť, trieda, viditeľnosť, OCR transkripcia, stav symbolového mapovania) je riadený v hooku \texttt{useBoxEditor}. Hook zabezpečuje históriu akcií pre undo/redo, detekciu kolízií pri presúvaní a správu škálovacích faktorov pri zmene veľkosti okna prehliadača.
 
 \subsection{Konfigurácia projektu a spúšťanie}
 
-Konfiguračný súbor package.json obsahuje definíciu závislostí, skripty pre spustenie vývojového prostredia, vytvorenie produkčného buildu a spúšťanie testov, ako aj konfiguráciu cieľových prehliadačov. Súvisiace správanie build procesu a vývojového servera je spravované prostredníctvom react-scripts. Súbor package-lock.json uzamyká presné verzie závislostí, čím zabezpečuje reprodukovateľnosť vývojového prostredia v rámci tímu.
-
-Súbor .gitignore definuje, ktoré súbory a priečinky sa nezahŕňajú do Git repozitára, čím sa predchádza verzovaniu generovaných súborov a zbytočnému zväčšovaniu repozitára. Dockerfile.dev slúži na spustenie frontendu vo vývojovom kontajneri a zabezpečuje jednotné vývojové prostredie nezávislé od konfigurácie operačného systému.
+Vývojové prostredie je kontajnerizované pomocou Docker. Dockerfile.dev spustí React development server s hot-reload (\texttt{CHOKIDAR\_USEPOLLING=true}) na porte 3000. Konfiguračný súbor \texttt{package.json} definuje závislosti a skripty.
 
 \subsection{Komunikácia s backendom}
 
-Frontend komunikuje s backendovou službou prostredníctvom REST API, pričom realizuje registráciu a prihlásenie používateľov pomocou JSON požiadaviek a nahrávanie dokumentov pomocou multipart/form-data. Z architektonického hľadiska je dôležité, že frontend je oddelený od AI modulov a získava už spracované výsledky prostredníctvom backendovej vrstvy, ktoré následne iba vizualizuje používateľovi, čo je v súlade s princípom separácie zodpovedností v systéme.
+Frontend komunikuje s backendovou službou prostredníctvom REST API pomocou natívneho \texttt{fetch} API. Základná URL backendu je definovaná v konštante \texttt{API\_BASE} (\texttt{REACT\_APP\_API\_URL} z prostredia). Všetky volania chránených endpointov obsahujú JWT token v hlavičke \texttt{Authorization}. Frontend je striktne oddelený od AI modulu a komunikuje s ním výhradne nepriamo cez backendovú vrstvu.
+

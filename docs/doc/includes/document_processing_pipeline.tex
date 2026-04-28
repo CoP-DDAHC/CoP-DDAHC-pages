@@ -48,7 +48,35 @@ Inferencia Tesseract OCR je vďaka skompilovanému binárnemu súboru rýchlejš
 
 \subsection{Predspracovanie obrázkov}
 
-Po úspešnom prijatí dokumentu nasleduje fáza predspracovania obrázkov. Cieľom tejto fázy je zlepšiť kvalitu obrázkov a pripraviť ich na následné kroky spracovania, ako je detekcia a klasifikácia elementov. Predspracovanie zahŕňa niekoľko krokov vrátane binarizácie, odstránenia šumu a vyrovnania dokumentu.
+Po úspešnom prijatí dokumentu nasleduje fáza predspracovania obrázkov. Cieľom tejto fázy je zlepšiť kvalitu obrazu a pripraviť ho na následnú detekciu štruktúr. Všetky kroky predspracovania sú voliteľné a nastaviteľné v pipeline rozhraní (krok 2) prostredníctvom prepínačov a posuvníkov; okamžitý vizuálny náhľad umožňuje používateľovi vybrať optimálnu kombináciu pre daný dokument.
+
+\subsubsection{Korekcia natočenia a naklonenia}
+
+Naskenované dokumenty sú často mierne naklonené. Systém poskytuje dva mechanizmy korekcie:
+\begin{itemize}
+    \item \textbf{Manuálna rotácia} – posuvník s rozsahom od $-45°$ do $+45°$, náhľad sa aktualizuje v reálnom čase pomocou CSS transformácie.
+    \item \textbf{Automatická korekcia naklonenia (Auto Deskew)} – algoritmus odhadne uhol naklonenia dokumentu pomocou Houghovej transformácie hrán a automaticky ho skoriguje. Vstupný obrázok je pred detekciou hrán zmenšený (max. strana 1200 px) a jemne rozmazaný Gaussovým filtrom. Z detegovaných priamok sa vypočíta medián uhlov z intervalu $(-30°, 30°)$, ktorý je orezsaný na $\pm 7°$, aby sa predišlo prehnanej korekcii.
+\end{itemize}
+
+\subsubsection{Jas a kontrast}
+
+Posuvníky jasu (\textit{Brightness}) a kontrastu (\textit{Contrast}) umožňujú lineárnu úpravu hodnôt pixelov: $I' = \alpha \cdot I + \beta$, kde $\alpha$ zodpovedá kontrastu a $\beta$ jasu. Zmeny sú viditeľné okamžite v náhľade bez odosielania na server.
+
+\subsubsection{Konverzia do odtieňov šedej a binarizácia}
+
+Pred väčšinou AI filtrov je farebný obrázok prevedený do odtieňov šedej (funkcia \texttt{grayscale}). Binarizácia (\textit{Binarize}) ďalej prevádza obrázok na čiernobiely pomocou adaptívneho prahovania Gaussovou metódou (OpenCV \texttt{adaptiveThreshold}, veľkosť bloku 35, konštanta 15), čo potlačuje nerovnomerné osvetlenie typické pre historické dokumenty.
+
+\subsubsection{Odstránenie šumu}
+
+Filter \textit{Denoise} aplikuje ne-lokálne stredovanie (\textit{Non-Local Means Denoising}, funkcia \texttt{fastNlMeansDenoising}) s parametrami $h=10$, veľkosť šablóny 7 a veľkosť vyhľadávacieho okna 21. Táto metóda zachováva ostré hrany znakov pri súčasnom potlačení náhodného šumu, čo je dôležité pre historické dokumenty s degradovaným papierom.
+
+\subsubsection{Korekcia tieňovania}
+
+Filter \textit{Shade Correction} vyrovnáva nerovnomerné osvetlenie a farebné prechody vznikajúce pri skenovaní dokumentov s pokrútenými alebo zložkovanými stranami. Algoritmus odhaduje pozadie pomocou morfologickej operácie otvorenia (\textit{morphological opening}) s eliptickým jadrom veľkosti 61 × 61 pixelov a od obrazu ho odčíta, čím sa obrázok normalizuje do rozsahu 0–255.
+
+\subsubsection{Odstránenie škvŕn}
+
+Filter \textit{Remove Speckles} odstraňuje malé osamotené artefakty (škvrny, prach, poškodenie papiera) pomocou analýzy spojených komponentov. Zo binárneho obrázka sa extrahujú všetky spojené komponenty popredia (\textit{foreground}) a z výstupu sa ponechajú len tie s plochou väčšou ako 25 pixelov. Malé komponenty sú považované za šum a sú z obrázka odstránené.
 
 \subsection{Detekcia a klasifikácia elementov, párov a sekcií}
 
@@ -81,4 +109,136 @@ Experimenty ukázali, že pre naše potreby je najvhodnejší hierarchický prí
 
 \subsubsection{Integrácia do produkčného prostredia}
 
-Keďže spracovanie má byť len poloautomatické a anotácie navrhnuté naším nástrojom môže človek potom opraviť, na implementáciu sme zvolili menší model, keďže dosahuje stále výbornú presnosť a zároveň je rýchly na inferenciu a menej náročný na zdroje.
+Keďže spracovanie má byť len poloautomatické a anotácie navrhnuté naším nástrojom môže človek potom opraviť, na implementáciu sme zvolili model \textbf{YOLOv11n} (nano, multiclass), keďže dosahuje stále výbornú presnosť a zároveň je rýchly na inferenciu a menej náročný na zdroje. Jedná sa o jeden model, ktorý súčasne deteguje všetky tri triedy (element, pair, section). Tento model je načítaný zo súboru \texttt{best.pt} uloženého na serveri a je k dispozícii aj možnosť nahrania vlastného modelu cez rozhranie aplikácie.
+
+\subsubsection{Výsledky a porovnanie experimentov}
+
+V tejto časti sú uvedené výsledky meraní na testovacej množine pre všetky experimentálne konfigurácie. Sú porovnávané tri metriky: AP50--95 (priemerná presnosť pri prahoch IoU od 0.50 do 0.95), AP50 (priemerná presnosť pri prahu IoU~0.50) a AR@maxDet (maximálna priemerná pokrytosť). Pre každú konfiguráciu sú uvedené výsledky bez predtrénovania na IAM datasete (BASE) a s predtrénovaním (IAM).
+
+Notácia konfigurácií je nasledovná:
+\begin{itemize}
+    \item $\mathrm{MC}$ – Multiclass: jeden model pre všetky triedy (Stratégia A/B)
+    \item $\mathrm{SC}$ – Single Class: samostatný model pre každú triedu (Stratégia C/D)
+    \item $\mathrm{PSC}$ – Progressive Single Class: hierarchické trénovanie (Stratégia E/F)
+    \item dolný index: $E$ = element, $P$ = pair, $S$ = section, $PS$ = pair + section
+    \item horný index: veľkosť modelu ($n$ = nano, $s$ = small, $m$ = medium, $l$ = large, $x$ = xlarge)
+\end{itemize}
+
+\begin{table*}[t]
+  \centering
+  \scriptsize
+  \setlength{\tabcolsep}{4pt}
+  \renewcommand{\arraystretch}{1.25}
+  \caption{\textbf{Element} detection (BASE / IAM), sorted by AP50--95.}
+  \begin{tabular}{|c|l|c|c|c|}
+      \hline
+      \textbf{\#} & Config & AP50--95 & AP50 & AR@maxDet \\
+      \hline 1 & $\mathrm{MC}_{E}^{x}$ & 0.418865 / \textbf{0.442743} & 0.826388 / \textbf{0.862885} & 0.497512 / \textbf{0.523412} \\
+      \hline 2 & $\mathrm{SC}_{E}^{x}$ & \textbf{0.426273} / 0.408331 & \textbf{0.854733} / 0.813628 & \textbf{0.510218} / 0.498712 \\
+      \hline 3 & $\mathrm{SC}_{E}^{m}$ & \textbf{0.419970} / 0.415970 & 0.841385 / \textbf{0.866617} & 0.506575 / \textbf{0.508974} \\
+      \hline 4 & $\mathrm{SC}_{E}^{s}$ & 0.407603 / \textbf{0.414129} & 0.844417 / \textbf{0.847365} & 0.503687 / \textbf{0.514127} \\
+      \hline 5 & $\mathrm{SC}_{E}^{l}$ & 0.395398 / \textbf{0.413040} & 0.780095 / \textbf{0.837133} & 0.481653 / \textbf{0.507508} \\
+      \hline 6 & $\mathrm{MC}_{E}^{l}$ & \textbf{0.412057} / 0.410873 & \textbf{0.841552} / 0.837003 & 0.500844 / \textbf{0.508352} \\
+      \hline 7 & $\mathrm{MC}_{E}^{m}$ & 0.380390 / \textbf{0.397263} & 0.801307 / \textbf{0.831514} & 0.458774 / \textbf{0.496357} \\
+      \hline 8 & $\mathrm{MC}_{E}^{s}$ & 0.356304 / \textbf{0.386119} & 0.790071 / \textbf{0.813748} & 0.446513 / \textbf{0.478943} \\
+      \hline 9 & $\mathrm{SC}_{E}^{n}$ & 0.291828 / \textbf{0.346671} & 0.722084 / \textbf{0.754670} & 0.417948 / \textbf{0.460462} \\
+      \hline 10 & $\mathrm{MC}_{E}^{n}$ & 0.303698 / \textbf{0.324925} & 0.751615 / \textbf{0.754085} & 0.419458 / \textbf{0.434562} \\
+      \hline
+  \end{tabular}
+  \label{tab:elements}
+\end{table*}
+
+\begin{table*}[t]
+ \centering
+ \scriptsize
+ \setlength{\tabcolsep}{4pt}
+ \renewcommand{\arraystretch}{1.25}
+ \caption{\textbf{Pair} detection (BASE / IAM), sorted by AP50--95.}
+ \begin{tabular}{|c|l|c|c|c|}
+ \hline
+ \textbf{\#} & Config & AP50--95 & AP50 & AR@maxDet \\
+ \hline 1 & $\mathrm{PSC}_{P}^{x}$ & 0.197503 / \textbf{0.707037} & 0.559233 / \textbf{0.989535} & 0.365012 / \textbf{0.756901} \\
+ \hline 2 & $\mathrm{PSC}_{P}^{l}$ & 0.523616 / \textbf{0.579468} & 0.892611 / \textbf{0.914471} & 0.623487 / \textbf{0.651332} \\
+ \hline 3 & $\mathrm{MC}_{P}^{x}$ & 0.526049 / \textbf{0.576587} & 0.854994 / \textbf{0.894489} & 0.607627 / \textbf{0.639225} \\
+ \hline 4 & $\mathrm{PSC}_{P}^{m}$ & 0.469221 / \textbf{0.562672} & 0.827748 / \textbf{0.879177} & 0.563196 / \textbf{0.622760} \\
+ \hline 5 & $\mathrm{PSC}_{P}^{s}$ & 0.501274 / \textbf{0.549789} & 0.850322 / \textbf{0.879805} & 0.578935 / \textbf{0.629782} \\
+ \hline 6 & $\mathrm{SC}_{P}^{x}$ & 0.473048 / \textbf{0.537395} & 0.823953 / \textbf{0.887709} & 0.559201 / \textbf{0.619249} \\
+ \hline 7 & $\mathrm{MC}_{P}^{l}$ & 0.517217 / \textbf{0.535005} & \textbf{0.869043} / 0.860508 & 0.601090 / \textbf{0.620218} \\
+ \hline 8 & $\mathrm{MC}_{P}^{s}$ & \textbf{0.523032} / 0.478424 & \textbf{0.851431} / 0.809891 & \textbf{0.593947} / 0.571792 \\
+ \hline 9 & $\mathrm{MC}_{P}^{m}$ & \textbf{0.516368} / 0.510349 & 0.832591 / \textbf{0.856546} & 0.575424 / \textbf{0.603390} \\
+ \hline 10 & $\mathrm{SC}_{P}^{l}$ & 0.484346 / \textbf{0.512818} & 0.820297 / \textbf{0.879527} & 0.565981 / \textbf{0.617070} \\
+ \hline 11 & $\mathrm{SC}_{P}^{s}$ & \textbf{0.502915} / 0.475256 & \textbf{0.846127} / 0.829118 & 0.569613 / \textbf{0.570460} \\
+ \hline 12 & $\mathrm{SC}_{P}^{m}$ & \textbf{0.490953} / 0.487074 & 0.820520 / \textbf{0.829490} & 0.560775 / \textbf{0.572881} \\
+ \hline 13 & $\mathrm{PSC}_{P}^{n}$ & 0.466077 / \textbf{0.471455} & 0.813272 / \textbf{0.866036} & 0.542615 / \textbf{0.573002} \\
+ \hline 14 & $\mathrm{MC}_{P}^{n}$ & 0.416858 / \textbf{0.471266} & 0.788888 / \textbf{0.844092} & 0.536320 / \textbf{0.572881} \\
+ \hline 15 & $\mathrm{SC}_{P}^{n}$ & \textbf{0.457546} / 0.457186 & 0.794880 / \textbf{0.827689} & 0.539831 / \textbf{0.559927} \\
+ \hline
+ \end{tabular}
+ \label{tab:pairs}
+\end{table*}
+
+\begin{table*}[t]
+ \centering
+ \scriptsize
+ \setlength{\tabcolsep}{4pt}
+ \renewcommand{\arraystretch}{1.25}
+ \caption{\textbf{Section} detection (BASE / IAM), sorted by AP50--95.}
+ \begin{tabular}{|c|l|c|c|c|}
+ \hline
+ \textbf{\#} & Config & AP50--95 & AP50 & AR@maxDet \\
+ \hline 1 & $\mathrm{MC}_{S}^{s}$ & \textbf{0.675996} / 0.288915 & \textbf{0.914457} / 0.662160 & \textbf{0.735897} / 0.512821 \\
+ \hline 2 & $\mathrm{PSC}_{PS}^{n}$ & \textbf{0.670703} / 0.544959 & \textbf{0.968821} / 0.853626 & \textbf{0.753846} / 0.674359 \\
+ \hline 3 & $\mathrm{SC}_{S}^{s}$ & \textbf{0.658436} / 0.569511 & \textbf{0.889884} / 0.848681 & \textbf{0.771795} / 0.684615 \\
+ \hline 4 & $\mathrm{MC}_{S}^{n}$ & \textbf{0.620787} / 0.545854 & \textbf{0.917656} / 0.865405 & \textbf{0.671795} / 0.643590 \\
+ \hline 5 & $\mathrm{PSC}_{S}^{n}$ & \textbf{0.614429} / 0.527749 & \textbf{0.889806} / 0.853973 & \textbf{0.735897} / 0.661538 \\
+ \hline 6 & $\mathrm{SC}_{S}^{m}$ & \textbf{0.607995} / 0.434062 & \textbf{0.870315} / 0.826971 & \textbf{0.738462} / 0.643590 \\
+ \hline 7 & $\mathrm{PSC}_{PS}^{x}$ & 0.446078 / \textbf{0.604855} & 0.768985 / \textbf{0.924398} & 0.641026 / \textbf{0.730769} \\
+ \hline 8 & $\mathrm{SC}_{S}^{n}$ & 0.543512 / \textbf{0.598958} & 0.760765 / \textbf{0.922010} & \textbf{0.715385} / 0.707692 \\
+ \hline 9 & $\mathrm{PSC}_{S}^{s}$ & 0.581540 / \textbf{0.590169} & 0.918307 / \textbf{0.926784} & \textbf{0.694872} / 0.689744 \\
+ \hline 10 & $\mathrm{MC}_{S}^{l}$ & \textbf{0.589901} / 0.430766 & \textbf{0.895862} / 0.750275 & \textbf{0.705128} / 0.584615 \\
+ \hline 11 & $\mathrm{PSC}_{PS}^{m}$ & 0.468284 / \textbf{0.587664} & 0.757994 / \textbf{0.875035} & \textbf{0.705128} / 0.682051 \\
+ \hline 12 & $\mathrm{PSC}_{PS}^{l}$ & \textbf{0.578751} / 0.495405 & \textbf{0.911799} / 0.884279 & \textbf{0.735897} / 0.628205 \\
+ \hline 13 & $\mathrm{MC}_{S}^{x}$ & \textbf{0.560191} / 0.440450 & \textbf{0.845114} / 0.761918 & \textbf{0.694872} / 0.602564 \\
+ \hline 14 & $\mathrm{PSC}_{S}^{x}$ & \textbf{0.543934} / 0.374069 & \textbf{0.922654} / 0.645354 & \textbf{0.669231} / 0.628205 \\
+ \hline 15 & $\mathrm{PSC}_{S}^{l}$ & \textbf{0.535222} / 0.426230 & \textbf{0.917067} / 0.804596 & \textbf{0.658974} / 0.628205 \\
+ \hline 16 & $\mathrm{PSC}_{PS}^{s}$ & \textbf{0.527271} / 0.519343 & \textbf{0.900332} / 0.900303 & 0.628205 / \textbf{0.669231} \\
+ \hline 17 & $\mathrm{MC}_{S}^{m}$ & \textbf{0.513841} / 0.362165 & \textbf{0.818892} / 0.679845 & \textbf{0.651282} / 0.569231 \\
+ \hline 18 & $\mathrm{SC}_{S}^{l}$ & \textbf{0.512770} / 0.408913 & \textbf{0.865868} / 0.764824 & \textbf{0.712821} / 0.612821 \\
+ \hline 19 & $\mathrm{SC}_{S}^{x}$ & 0.476240 / \textbf{0.486252} & 0.800067 / \textbf{0.856266} & \textbf{0.643590} / 0.628205 \\
+ \hline 20 & $\mathrm{PSC}_{S}^{m}$ & \textbf{0.265140} / 0.231023 & \textbf{0.509522} / 0.482795 & \textbf{0.600000} / 0.530769 \\
+ \hline
+ \end{tabular}
+ \label{tab:sections}
+\end{table*}
+
+Z výsledkov vyplýva niekoľko dôležitých záverov. Pre detekciu elementov dosahuje IAM predtrénovanie vo väčšine konfigurácií zlepšenie, pričom najlepší výsledok ($\text{AP50--95} = 0.443$) dosiahla IAM verzia konfigurácie $\mathrm{MC}_{E}^{x}$. Pre detekciu párov je IAM predtrénovanie výrazne prospešné, zvlášť pre hierarchický prístup PSC – konfigurácia $\mathrm{PSC}_{P}^{x}$ s IAM predtrénovaním dosiahla AP50 = 0.990, čo je výrazne lepší výsledok ako akákoľvek BASE konfigurácia. Pre detekciu sekcií sú výsledky menej jednoznačné, pričom niektoré BASE konfigurácie (napr. $\mathrm{MC}_{S}^{s}$, $\mathrm{PSC}_{PS}^{n}$) prekonávajú svoje IAM varianty.
+
+\subsection{Rozpoznávanie textu v elementoch (OCR)}
+
+Po detekcii bounding boxov v kroku 3 nasleduje v pipeline kroku 4 (OCR Review) rozpoznávanie textu v detegovaných elementoch. Na každý element sa aplikuje \textbf{Tesseract OCR} s predspracovaním výrezu: zväčšenie 2×, Gaussovo rozmazanie (3×3), Otsuova binarizácia a režim segmentácie strany \texttt{--psm 6} (predpokladáme blok uniformného textu). Transkribovaný text sa zobrazí pri každom elemente v bočnom paneli a je editovateľný.
+
+Používateľ môže v tomto kroku reklasifikovať každý element na jednu z troch tried: \textit{plain text} (otvorený text), \textit{cipher text} (šifrový symbol) alebo \textit{symbol} (nešpecifikovaný symbol). Elementy sú automaticky priradené k páru podľa geometrického prekryvu, čo umožňuje ich zobrazenie v hierarchickom zozname párov.
+
+\subsection{Mapovanie symbolov}
+
+Krok 5 (Symbol Match) sa zameriava na priradenie \textit{cipher text} elementov k záznamom v symbolovej databáze. Pre každý \textit{cipher text} element backend navrhne najvhodnejší symbol z databázy spolu so skóre zhody (\textit{confidence}) a zoznamom kandidátov. Každý element dostane stav:
+\begin{itemize}
+    \item \texttt{matched} – zhoda s vysokou spoľahlivosťou ($\geq 82\%$),
+    \item \texttt{possible} – pravdepodobná zhoda ($56\text{–}79\%$), vyžaduje manuálne potvrdenie,
+    \item \texttt{not\_found} – symbol nebol nájdený v databáze ($< 50\%$); používateľ ho môže označiť ako nový symbol.
+\end{itemize}
+
+Používateľ môže priradenie potvrdiť, opraviť výberom iného kandidáta alebo pridať poznámku. V aktuálnej implementácii je logika priraďovania symbolov implementovaná ako \textbf{mock} (deterministicky generované výsledky na základe polohy bounding boxu); integrácia so skutočnou symbolovou databázou je predmetom ďalšieho vývoja.
+
+\subsection{Export výsledkov}
+
+Krok 6 (Export) umožňuje uloženie spracovaného dokumentu. Výstupom je hierarchicky štruktúrovaný \textbf{JSON} súbor, ktorý obsahuje:
+\begin{itemize}
+    \item metadata: verzia formátu, rozmery obrazu, názov dokumentu,
+    \item zoznam sekcií s vnorenými pármi a ich elementmi (plain text, cipher text s výsledkami symbolového mapovania),
+    \item páry na najvyššej úrovni (mimo sekcií),
+    \item nepriradené elementy,
+    \item súhrnné štatistiky: počty sekcií, párov, plain text / cipher text elementov a stav symbolového mapovania (matched / possible / not\_found).
+\end{itemize}
+
+Dokument aj export sú uložené v databáze a prístupné z prehľadu dokumentov používateľa.

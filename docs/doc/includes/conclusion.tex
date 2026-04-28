@@ -1,0 +1,31 @@
+Cieľom tímového projektu bolo navrhnúť a implementovať kolaboratívnu webovú platformu pre poloautomatické spracovanie historických šifrovacích dokumentov. Výsledkom práce tímu počas dvoch semestrov akademického roka 2025/2026 je plne funkčný systém dostupný na adrese \texttt{xmolnarf1.com}, ktorý integruje metódy počítačového videnia, strojového učenia a moderného webového vývoja.
+
+\section*{Dosiahnuté ciele}
+
+Z funkčného hľadiska bol systém úspešne implementovaný v nasledujúcich oblastiach:
+
+\begin{itemize}
+    \item \textbf{Šesťkrokové pipeline rozhranie} pre spracovanie dokumentov, ktoré pokrýva celý pracovný postup od validácie nahraného dokumentu cez predspracovanie obrazu, automatickú detekciu štruktúr, OCR transkripciu, symbolové mapovanie až po hierarchický JSON export.
+    \item \textbf{Detekcia štruktúr v šifrovacích kľúčoch} pomocou modelu YOLOv11n (nano, multiclass). Model bol trénovaný na datasete Transcendino s experimentálnym porovnaním šiestich trénovacích stratégií v kombinácii s rôznymi veľkosťami modelov. Najlepšia konfigurácia pre detekciu párov ($\mathrm{PSC}_{P}^{x}$ s IAM predtrénovaním) dosiahla AP50 = 0.990; pre produkčné nasadenie bol zvolený model nano pre jeho efektívnosť.
+    \item \textbf{Predspracovanie obrazu} s podporou automatickej korekcie naklonenia (Houghova transformácia), binarizácie (adaptívne prahovanie), odstránenia šumu (Non-Local Means), korekcie tieňovania a odstránenia škvŕn.
+    \item \textbf{Validácia dokumentov} pomocou Tesseract OCR so sliding window mechanizmom, ktorá efektívne odmieta nesúvisiace obrázky s časom inferencie 0.25–0.5 s na dokument.
+    \item \textbf{Interaktívny editor bounding boxov} s podporou kreslenia, presúvania, zmeny veľkosti, premenovania tried a históriou akcií undo/redo.
+    \item \textbf{Správa používateľov a dokumentov} s podporou Google OAuth, e-mailovej verifikácie, zdieľania dokumentov a denníka aktivít.
+    \item \textbf{Administrátorské rozhranie} pre správu používateľov a dokumentov.
+    \item \textbf{Nasadenie} na vlastnom serverovom hardvéri (Raspberry Pi 5) s Dockerom, Nginxom a HTTPS cez Cloudflare.
+\end{itemize}
+
+\section*{Obmedzenia a budúci vývoj}
+
+Niektoré plánované funkcionality neboli v rámci projektu plne implementované:
+
+\begin{itemize}
+    \item \textbf{Symbolová databáza} – priradenie šifrových symbolov je aktuálne implementované ako deterministický mock. Integrácia so skutočnou databázou symbolov datasetu Transcendino je prioritou ďalšieho vývoja.
+    \item \textbf{Dešifrovanie textu} – využitie rekonstruovaného šifrovacieho kľúča na dešifrovanie šifrového textu zostáva ako plánovaná funkcionalita.
+    \item \textbf{Gamifikačný systém} (body, kredity, rebríček) bol vyhodnotený ako mimo rozsahu aktuálnej implementácie.
+    \item \textbf{Pokročilé filtrovanie dokumentov} podľa metadát (jazyk, krajina, dátum) je plánované pre budúce vydanie.
+\end{itemize}
+
+\section*{Záver}
+
+Projekt preukázal, že kombinácia moderných metód počítačového videnia (YOLOv11) s interaktívnym webovým rozhraním je efektívnym prístupom pre digitalizáciu a anotáciu historických šifrovacích dokumentov. Modulárna architektúra systému (samostatné Docker kontajnery pre frontend, backend a AI modul) umožňuje jednoduché rozšírenie o nové AI moduly alebo funkcionalitu bez zásahu do existujúcich komponentov. Platforma vytvára solídny základ pre ďalší výskum a vývoj nástrojov pre historickú kryptografiu.

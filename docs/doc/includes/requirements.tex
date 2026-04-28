@@ -1,37 +1,67 @@
 \section{Požiadavky na systém}
 
-Na základe konzultácií s vedúcim projektu a analýzy potrieb cieľových používateľov bol zostavený zoznam funkčných a nefunkčných požiadaviek na systém. Požiadavky sú rozdelené do niekoľkých logických kategórií, ktoré odrážajú hlavné oblasti funkcionality platformy.
+Na základe konzultácií s vedúcim projektu a analýzy potrieb cieľových používateľov bol zostavený zoznam funkčných a nefunkčných požiadaviek na systém. Požiadavky sú rozdelené do niekoľkých logických kategórií, ktoré odrážajú hlavné oblasti funkcionality platformy. Pri každej požiadavke je uvedený stav implementácie v rámci projektu.
 
 \subsection{Funkčné požiadavky}
 
 \subsubsection{Spracovanie šifrovacích dokumentov}
 
-Jadrom systému je spracovanie historických šifrovacích dokumentov. Systém musí umožniť nahratie dokumentu vo forme obrázka alebo skenu a validovať formát vstupného súboru, pričom neplatné vstupy budú odmietnuté. Používateľ musí mať možnosť klasifikovať dokument podľa jeho typu (šifrovací kľúč alebo šifrový text).
+Jadrom systému je poloautomatické spracovanie historických šifrovacích dokumentov realizované prostredníctvom šesťkrokového pipeline rozhrania.
 
-Dôležitou súčasťou spracovania je predspracovanie obrázkov, kde používateľ musí mať možnosť upraviť parametre ako thresholdy, odstránenie šumu a vyrovnanie dokumentu. Tieto zmeny by sa mali zobrazovať v reálnom čase, aby používateľ videl ich vplyv na kvalitu spracovania.
-
-Po automatickom spracovaní dokumentu musí mať používateľ možnosť manuálne upraviť navrhnuté bounding boxy a ťuknutím na bounding box zmeniť návrh rozpoznania. Systém má vedieť automaticky detegovať tabuľky v šifrovacích kľúčoch a používateľ musí byť schopný anotovať symboly a oblasti dokumentu.
-
-Používateľ aj systém musia vedieť mapovať symboly do databázy a systém musí podporovať rekonštrukciu substitučných tabuliek. Používateľ musí vedieť použiť šifrovací kľúč na dešifrovanie textu a upravovať návrh dešifrovania. K dispozícii musí byť možnosť vrátiť sa k predchádzajúcim krokom a upraviť ich. K nahratým dokumentom bude automaticky pridaný watermark na ochranu autorských práv.
+\begin{itemize}
+    \item[\checkmark] Systém umožňuje nahratie dokumentu (obrázok, sken) s podporou drag\,\&\,drop a automaticky validuje formát dokumentu, pričom neplatné vstupy (obrázky bez textu) sú odmietnuté pomocou OCR kontroly.
+    \item[\checkmark] Používateľ má možnosť upraviť parametre predspracovania obrazu (natočenie, jas, kontrast, automatická korekcia naklonenia, binarizácia, odstránenie šumu, korekcia tieňovania, odstránenie škvŕn) s okamžitým náhľadom výsledku.
+    \item[\checkmark] Systém automaticky deteguje oblasti záujmu (sekcie, páry a elementy) v šifrovacích kľúčoch pomocou modelu YOLOv11 a zobrazí výsledky vo forme interaktívnych ohraničujúcich rámcov.
+    \item[\checkmark] Používateľ má možnosť manuálne upraviť bounding boxy po detekcii, vytvárať nové, presúvať, meniť ich veľkosť, prejmenovávať triedy a mazať ich.
+    \item[\checkmark] Systém aplikuje OCR (Tesseract) na detegované elementy a priraďuje im transkripciu textu.
+    \item[\checkmark] Používateľ môže manuálne reklasifikovať elementy na \textit{plain text}, \textit{cipher text} alebo \textit{symbol} a opraviť OCR transkripciu.
+    \item[\checkmark] Systém navrhuje priradenie symbolov z databázy ku každému \textit{cipher text} elementu (funkcia momentálne implementovaná ako mock; integrácia so skutočnou databázou symbolov je plánovaná).
+    \item[\checkmark] Výsledky spracovania sú exportovateľné vo formáte JSON s hierarchickou štruktúrou (sekcie → páry → elementy).
+    \item[$\circ$] Mapovanie symbolov do reálnej centralizovanej databázy a rekonštrukcia substitučných tabuliek sú predmetom ďalšieho vývoja.
+    \item[$\circ$] Dešifrovanie textu s využitím rekonstruovaného kľúča je plánované ako budúca funkcionalita.
+\end{itemize}
 
 \subsubsection{Používateľský profil a autentifikácia}
 
-Systém musí umožniť registráciu nového používateľa vrátane možnosti registrácie pomocou Google účtu. Používateľom musí byť umožnené prihlásenie a odhlásenie zo systému. Registrovaný používateľ musí mať možnosť upraviť svoj profil vrátane mena a hesla a spravovať svoje dokumenty prostredníctvom zobrazenia a mazania.
-
-Všetky zmeny vykonané v systéme sa zaznamenávajú do histórie aktivity, vrátane nahratia dokumentu, jeho úpravy a zdieľania.
+\begin{itemize}
+    \item[\checkmark] Systém umožňuje registráciu nového používateľa s overením e-mailovej adresy.
+    \item[\checkmark] Používateľ sa môže registrovať a prihlasovať pomocou Google účtu (OAuth 2.0).
+    \item[\checkmark] Prihlásenie a odhlásenie sú plne implementované; autentifikačný stav je zachovaný medzi reláciami pomocou JWT tokenu uloženého v \texttt{localStorage}.
+    \item[\checkmark] Používateľ môže upraviť svoje používateľské meno a heslo v sekcii profilu.
+    \item[\checkmark] Systém zaznamenáva aktivitu používateľa (nahranie, úprava, zdieľanie, mazanie dokumentov, prihlásenie, odhlásenie) do denníka aktivít.
+\end{itemize}
 
 \subsubsection{Správa dokumentov}
 
-Systém musí umožniť zobrazenie všetkých dokumentov a používateľ musí vedieť filtrovať dokumenty podľa rôznych kritérií ako typ dokumentu, jazyk, krajina pôvodu, dátum alebo autor. Používateľ musí vedieť prepínať medzi verejným a súkromným režimom svojich dokumentov a zdieľať dokumenty s inými používateľmi, pričom môže nastaviť rôzne role prístupu (čítanie alebo zápis).
-
-\subsubsection{Gamifikácia}
-
-Pre zvýšenie motivácie používateľov systém implementuje prvky gamifikácie. Používateľ môže získavať body za aktivitu v systéme, napríklad za nahrávanie dokumentov alebo vytváranie anotácií. Body je možné míňať na AI spracovanie a pokročilé funkcie. Systém zobrazuje rebríček používateľov podľa získaných bodov.
+\begin{itemize}
+    \item[\checkmark] Systém zobrazuje všetky dokumenty prihláseného používateľa v prehľadnom mriežkovom rozložení.
+    \item[\checkmark] Používateľ môže dokumenty vyhľadávať podľa názvu.
+    \item[\checkmark] Dokumenty je možné otvoriť priamo v pipeline rozhraní pre ďalšie spracovanie.
+    \item[\checkmark] Systém podporuje prepínanie dokumentov medzi režimami \texttt{private}, \texttt{public} a \texttt{shared}.
+    \item[\checkmark] Dokumenty je možné zdieľať s konkrétnymi používateľmi; zdieľané dokumenty sú prístupné v sekcii \textit{Shared with me}.
+    \item[\checkmark] Verejné dokumenty sú dostupné všetkým prihláseným používateľom v sekcii \textit{Public documents}.
+    \item[$\circ$] Filtrovanie dokumentov podľa typu, jazyka, krajiny pôvodu alebo dátumu je plánované ako budúca funkcionalita.
+    \item[$\circ$] Nastavenie rolí prístupu (čítanie / zápis) pre zdieľanie s inými používateľmi je predmetom ďalšieho vývoja.
+\end{itemize}
 
 \subsubsection{Administrácia}
 
-Administrátor systému má možnosť spravovať používateľov, dokumenty a symbolovú databázu. Správa symbolovej databázy zahŕňa normalizáciu, zlúčenie duplicitných symbolov a odstránenie chybných záznamov.
+\begin{itemize}
+    \item[\checkmark] Administrátor má prístup k prehľadu všetkých používateľov a môže spravovať ich účty.
+    \item[\checkmark] Administrátor má prístup k prehľadu všetkých dokumentov v systéme.
+    \item[$\circ$] Správa symbolovej databázy (normalizácia, zlúčenie duplicít, odstránenie chýb) je plánovaná ako budúca funkcionalita po zavedení reálnej databázy symbolov.
+\end{itemize}
+
+\subsubsection{Gamifikácia}
+
+Pôvodne plánovaný systém bodov, kreditov a rebríčka používateľov bol v priebehu projektu vyhodnotený ako mimo rozsahu aktuálnej implementácie a jeho realizácia bola odložená na neskorší vývoj platformy.
 
 \subsection{Nefunkčné požiadavky}
 
-Systém musí byť dostupný cez webové rozhranie. Bezpečnosť je zabezpečená šifrovaním hesiel a kontrolou prístupov k dokumentom. Používateľské rozhranie musí byť intuitívne a responzívne, vrátane podpory pre mobilné zariadenia. Architektúra systému musí byť modulárna, aby bolo možné jednoducho rozšíriť systém o nové AI moduly.
+\begin{itemize}
+    \item[\checkmark] Systém je dostupný cez webové rozhranie na doméne \texttt{xmolnarf1.com}.
+    \item[\checkmark] Bezpečnosť je zabezpečená bcrypt hashovaním hesiel, JWT autentifikáciou a kontrolou prístupov k dokumentom.
+    \item[\checkmark] Komunikácia so serverom prebieha šifrovane cez HTTPS (SSL certifikát spravovaný Cloudflare).
+    \item[\checkmark] Používateľské rozhranie je intuitívne a responzívne vrátane podpory pre mobilné zariadenia.
+    \item[\checkmark] Architektúra systému je modulárna – AI modul, backend a frontend sú nasadené ako nezávislé Docker kontajnery, čo umožňuje jednoduché rozšírenie o nové AI moduly.
+\end{itemize}
