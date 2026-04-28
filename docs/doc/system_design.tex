@@ -30,7 +30,7 @@ Súčasťou systému je bodový mechanizmus, ktorý slúži ako motivačný prvo
 
 Administrátor vystupuje ako aktér s rozšírenými oprávneniami. Má prístup k prípadom použitia zameraným na správu používateľských účtov, projektov a symbolovej databázy, ktorá je využívaná pri spracovaní historických dokumentov.
 
-\centerline{\includegraphics[width=1\textwidth]{usecase2.png}\label{fig:usecase2}}
+\centerline{\includegraphics[width=1\textwidth]{img/usecase2.png}\label{fig:usecase2}}
 
 \subsection{Spracovanie dokumentov}
 
@@ -42,7 +42,7 @@ AI modul v tomto prípade vystupuje ako podporný aktér, ktorý zabezpečuje au
 
 Používateľ má zároveň možnosť manuálne anotovať symboly a oblasti, mapovať symboly na ich významy a rekonštruovať tabuľky šifrovacích kľúčov. V záverečnej fáze môže byť existujúci šifrovací kľúč použitý na dešifrovanie textu, pričom návrh dešifrovania je možné iteratívne upravovať.
 
-\centerline{\includegraphics[width=1\textwidth]{usecase1.png}\label{fig:usecase1}}
+\centerline{\includegraphics[width=1\textwidth]{img/usecase1.png}\label{fig:usecase1}}
 
 \section{Tok dát v systéme}
 
@@ -61,7 +61,7 @@ Dátová vrstva systému zahŕňa databázu šifier, používateľských účtov
 Celkový tok dát je navrhnutý tak, aby minimalizoval závislosti medzi jednotlivými komponentmi a umožnil jednoduché rozšírenie systému o nové AI moduly alebo ďalšie funkcionality bez zásahu do existujúcej architektúry.
 
 
-\centerline{\includegraphics[width=0.7\textwidth]{dataflow.png}\label{fig:dataflow}}
+\centerline{\includegraphics[width=0.7\textwidth]{img/dataflow.png}\label{fig:dataflow}}
 
 \section{Sekvenčný diagram spracovania dokumentu}
 
@@ -78,7 +78,7 @@ Upravené dáta sú opätovne odoslané backendu, ktorý zabezpečuje ich aktual
 Sekvenčný diagram tak demonštruje poloautomatický a iteratívny charakter spracovania dokumentov, kde sa automatické výstupy AI modulov kombinujú s manuálnymi zásahmi používateľa. Zároveň zvýrazňuje oddelenie zodpovedností medzi aplikačnou vrstvou, backendom, AI modulmi a dátovým úložiskom.
 
 
-\centerline{\includegraphics[width=0.7\textwidth]{sequence1.png}\label{fig:sequence1}}
+\centerline{\includegraphics[width=0.7\textwidth]{img/sequence1.png}\label{fig:sequence1}}
 
 
 \end{document}
