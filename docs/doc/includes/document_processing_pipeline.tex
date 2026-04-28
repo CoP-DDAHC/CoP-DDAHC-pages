@@ -1,30 +1,15 @@
-% filepath: /home/balogh/code/tp1/CoP-DDAHC-pages/docs/document_processing_pipeline.tex
-\documentclass[12pt,a4paper]{article}
-\usepackage[utf8]{inputenc}
-\usepackage[slovak]{babel}
-\usepackage{hyperref}
-\usepackage{enumitem}
-\usepackage{geometry}
-\geometry{margin=2.5cm}
+\section{Spracovanie dokumentov}
 
-\title{Spracovanie dokumentov}
-\author{}
-\date{}
-
-\begin{document}
-
-\maketitle
-
-Celá pipeline spracovania dokumentov pozostáva z niekoľkých fáz. Sú zobrazené na diagrame na obr. \ref{fig:pipeline_diagram}.
+Celá pipeline spracovania dokumentov pozostáva z niekoľkých fáz. Sú zobrazené na diagrame na obr. \ref{fig:pipeline_diagram}. Nasledujúce podsekcie popisujú jednotlivé kroky spracovania od úvodnej kontroly dokumentu až po detekciu a klasifikáciu elementov.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{doc/img/pipeline_diagram.png}
+    \includegraphics[width=0.8\textwidth]{pipeline_diagram.png}
     \caption{Diagram spracovania dokumentov}
     \label{fig:pipeline_diagram}
 \end{figure}
 
-\section{Úvodná kontrola (document rejector)}
+\subsection{Úvodná kontrola dokumentov}
 
 Po nahraní nového obrázka systém najprv vyhodnocuje, či ide o historický dokument, alebo o nesúvisiaci obrázok (napríklad fotografia auta, zvieraťa a podobne). Cieľom je zabrániť spracovaniu irelevantných obrázkov.
 
@@ -47,37 +32,39 @@ Tesseract neumožňuje čítanie textu postupne a obrázky s veľkým množstvom
 
 Inferencia Tesseract OCR je vďaka skompilovanému binárnemu súboru rýchlejšia ako u EasyOCR, a preto celkový čas na vyhodnotenie dokumentu klesol o pár desatín sekundy pri zachovaní rovnakej presnosti detekcie na našich testovacích dokumentoch. Čas inferencie je momentálne v rozpätí okolo 0.25 až 0.5 sekundy na dokument.
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.45\textwidth]{doc/img/document_acceptor.png}
-    \includegraphics[width=0.45\textwidth]{doc/img/document_rejector.png}
-    \caption{Príklady akceptovaného a odmietnutého dokumentu pomocou Tesseract OCR.}
-    \label{fig:document_rejector}
-\end{figure}
-Tesseract OCR nasiel 30 slov na lavom obrazku, tym sa sliding window mechanizmus zastavil a dokument bol akceptovany. Na obrazku vpravo Tesseract nasiel len 9 slov a sliding window algoritmus skoncil, takze dokument bol odmietnuty.
-Vlavo: Historicky dokument
-Vpravo: Obrázok č. 206391 z COCO datasetu \cite{coco} (dostupný na: http://cocodataset.org/#explore?id=206391).
+% Obrázky document_acceptor.png a document_rejector.png je potrebné pridať do priečinka img/
+% \begin{figure}[h]
+%     \centering
+%     \includegraphics[width=0.45\textwidth]{document_acceptor.png}
+%     \includegraphics[width=0.45\textwidth]{document_rejector.png}
+%     \caption{Príklady akceptovaného a odmietnutého dokumentu pomocou Tesseract OCR.}
+%     \label{fig:document_rejector}
+% \end{figure}
+
+% Tesseract OCR našiel 30 slov na ľavom obrázku, tým sa sliding window mechanizmus zastavil a dokument bol akceptovaný. Na obrázku vpravo Tesseract našiel len 9 slov a sliding window algoritmus skončil, takže dokument bol odmietnutý.
+% Vľavo: Historický dokument.
+% Vpravo: Obrázok č. 206391 z COCO datasetu~\cite{coco} (dostupný na: \url{http://cocodataset.org/#explore?id=206391}).
 
 
-\section{Predspracovanie obrázkov}
+\subsection{Predspracovanie obrázkov}
 
-Po úspešnom prijatí dokumentu nasleduje fáza predspracovania obrázkov. Cieľom tejto fázy je zlepšiť kvalitu obrázkov a pripraviť ich na následné kroky spracovania, ako je detekcia a klasifikácia elementov. Predspracovanie zahŕňa niekoľko krokov, vrátane:
+Po úspešnom prijatí dokumentu nasleduje fáza predspracovania obrázkov. Cieľom tejto fázy je zlepšiť kvalitu obrázkov a pripraviť ich na následné kroky spracovania, ako je detekcia a klasifikácia elementov. Predspracovanie zahŕňa niekoľko krokov vrátane binarizácie, odstránenia šumu a vyrovnania dokumentu.
 
-\section{Detekcia a klasifikácia elementov, párov a sekcií}
+\subsection{Detekcia a klasifikácia elementov, párov a sekcií}
 
 Po úvodnom filtrovaní dokumentov nasleduje kľúčová fáza spracovania – extrakcia štruktúry a obsahu z kľúčových dokumentov (cipher keys). Tieto dokumenty majú špecifickú hierarchickú štruktúru: skladajú sa zo sekcií (napr. tabuľky), ktoré obsahujú páry (dvojice znakov otvorený text – šifra) a tie sú tvorené samotnými elementmi (jednotlivé symboly).
 
 Na túto úlohu sme zvolili architektúru \textbf{YOLO} (You Only Look Once), konkrétne verziu \textbf{YOLOv11}, ktorá predstavuje aktuálny state-of-the-art v oblasti detekcie objektov v reálnom čase.
 
-\subsection{Príprava dát a datasetov}
+\subsubsection{Príprava dát a datasetov}
 
 Pre trénovanie modelov sme museli pripraviť dva hlavné datasety. Prvým bol \textbf{IAM Handwriting Database}~\cite{iam_database}, ktorý obsahuje veľké množstvo anotovaného rukou písaného textu. Tento dataset slúžil primárne na predtrénovanie modelov (transfer learning), aby sa neurónová sieť naučila rozpoznávať črty rukopisu skôr, než začne riešiť špecifickú úlohu šifier. Pôvodné XML anotácie sme pomocou skriptov konvertovali do formátu YOLO.
 
 Druhým datasetom bol dataset \textbf{Transcendino} poskytnutý naším vedúcim, ktorý obsahuje historické šifrovacie kľúče. K tvorbe tohto datasetu sme v rámci tímového projektu prispeli aj my anotovaním dokumentov. Tieto dokumenty boli manuálne anotované pomocou nástroja \textbf{LabelMe}~\cite{labelme}, kde sme vyznačovali bounding boxy pre elementy, páry a sekcie. Následne sme vytvorili konverzný skript, ktorý transformoval JSON výstupy z LabelMe do YOLO formátu a rozdelil dáta na trénovaciu, validačnú a testovaciu množinu v pomere 70:20:10.
 
-\subsection{Experimentálne stratégie trénovania}
+\subsubsection{Experimentálne stratégie trénovania}
 
-Keďže detekcia vnorených objektov (element je v páre, pár je v sekcii) je pre štandardné detektory náročná, navrhli a porovnali sme v rámci súboru \texttt{training\_grid.py} šesť rôznych trénovacích stratégií:
+Keďže detekcia vnorených objektov (element je v páre, pár je v sekcii) je pre štandardné detektory náročná, navrhli a porovnali sme šesť rôznych trénovacích stratégií:
 
 \begin{enumerate}[label=\Alph*.]
     \item \textbf{Multiclass}: Trénovanie jedného modelu, ktorý sa snaží detegovať všetky tri triedy (element, pár, sekcia) naraz.
@@ -88,64 +75,10 @@ Keďže detekcia vnorených objektov (element je v páre, pár je v sekcii) je p
     \item \textbf{IAM Pretraining + Hierarchické trénovanie}: Kombinácia predtrénovania na rukopise a hierarchického prístupu.
 \end{enumerate}
 
-\subsection{Výsledky}
+\subsubsection{Výsledky}
 
 Experimenty ukázali, že pre naše potreby je najvhodnejší hierarchický prístup kombinovaný s predtrénovaním na IAM datasete (Stratégia F). Štandardný Multiclass prístup mal problémy s prekrývajúcimi sa bounding boxmi (keďže pár obklopuje elementy), čo viedlo k nižšej presnosti. Hierarchický prístup umožnil modelu lepšie pochopiť kontext a vzťahy medzi objektmi. Použitie modelu YOLOv11 vo veľkosti \texttt{x} (extra large) zabezpečilo dostatočnú kapacitu siete na zachytenie jemných detailov historického rukopisu.
 
-\subsection{Integrácia do produkčného prostredia}
+\subsubsection{Integrácia do produkčného prostredia}
 
-Keďže spracovanie má byť len poloautomatické a anotácie navrhnuté naším nástrojom môže človek potom opraviť, na implementáciu sme zvolili menší model \texttt{_____}, keďže dosahuje stále výbornú presnosť a zároveň je rýchly na inferenciu a menej náročný na zdroje.
-
-\section*{Použité zdroje}
-
-\begingroup
-\renewcommand{\section}[2]{}%
-\begin{thebibliography}{9}
-
-\bibitem{easyocr}
-JaidedAI,
-\textit{EasyOCR},
-2024, verzia 1.7.2,
-\url{https://github.com/JaidedAI/EasyOCR},
-Dostupné z: \url{https://github.com/JaidedAI/EasyOCR} [cit. 2026-01-01]
-
-\bibitem{tesseract}
-Ray Smith, Stefan Weil, Zdenko Podobny a prispievatelia,
-\textit{Tesseract OCR},
-2024, verzia 4.1.3,
-\url{https://github.com/tesseract-ocr/tesseract},
-Dostupné z: \url{https://github.com/tesseract-ocr/tesseract} [cit. 2026-01-01]
-
-\bibitem{pytesseract}
-Samuel Hoffstaetter a prispievatelia,
-\textit{pytesseract: Python-tesseract},
-2024, verzia 0.3.10,
-\url{https://github.com/madmaze/pytesseract},
-Dostupné z: \url{https://github.com/madmaze/pytesseract} [cit. 2026-01-01]
-
-\bibitem{iam_database}
-Urs-Viktor Marti, Horst Bunke,
-\textit{The IAM-database: An English Sentence Database for Off-line Handwriting Recognition},
-International Journal on Document Analysis and Recognition,
-vol. 5, č. 1, s. 39--46, 2002, Springer
-
-\bibitem{labelme}
-Kentaro Wada,
-\textit{labelme: Image Polygonal Annotation with Python},
-2018, GitHub repository,
-\url{https://github.com/wkentaro/labelme}
-
-
-@inproceedings{coco,
-  title = {Microsoft COCO: Common Objects in Context},
-  author = {Lin, Tsung-Yi and Maire, Michael and Belongie, Serge and Hays, James and Perona, Pietro and Ramanan, Deva and Dollár, Piotr and Zitnick, C. Lawrence},
-  booktitle = {European Conference on Computer Vision (ECCV)},
-  pages = {740--755},
-  year = {2014},
-  publisher = {Springer}
-}
-
-\end{thebibliography}
-\endgroup
-
-\end{document}
+Keďže spracovanie má byť len poloautomatické a anotácie navrhnuté naším nástrojom môže človek potom opraviť, na implementáciu sme zvolili menší model, keďže dosahuje stále výbornú presnosť a zároveň je rýchly na inferenciu a menej náročný na zdroje.

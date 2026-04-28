@@ -1,28 +1,4 @@
-\documentclass[a4paper,11pt]{article}
-\usepackage[utf8]{inputenc}
-\usepackage[slovak]{babel}
-\usepackage{enumitem}
-\usepackage{graphicx}
-\usepackage{fancyhdr}
-\usepackage{lastpage}
-\usepackage{hyperref}
-
-% Nastavenie hlavičky a pätičky
-\pagestyle{fancy}
-\fancyhf{}
-\fancyhead[L]{Zápisnica}
-\fancyhead[R]{\today}
-\fancyfoot[C]{\thepage}
-
-\title{Zápisnica zo stretnutia tímu}
-\author{Ing. Stanislav Marochok}
-\date{\today}
-
-\begin{document}
-
-\maketitle
-
-\section*{Kontrola postupu a požiadavky na UI – 23. októbra 2025}
+\subsubsection{Kontrola postupu a požiadavky na UI – 23. októbra 2025}
 
 \textbf{Dátum:} 23. októbra 2025 \\
 \textbf{Čas:} 16:00 – 16:40 \\
@@ -57,7 +33,7 @@
 Prebehla demonštrácia OCR a klasifikácie dokumentov integrovaná do web aplikácie. EasyOCR malo veľa závislostí, ktoré sa museli stiahnuť do Docker kontajnera, čo spôsobilo veľký Docker image (cca 14GB). EasyOCR bolo nahradené za skompilovaný Tesseract, čím sa build time znížil z 10 minút na 30 sekúnd a veľkosť image-u z 14GB na 2GB. Presnosť detekcie sa zachovala, inferencia sa zrýchlila.
 
 \paragraph{2. Predstavenie základnej schémy pre databázu a nové API endpointy}
-Backend bol napojený na databázu so základnou schémou. Ukladanie nahratých dokumentov do databázy, diskusia o formáte uloženia. API endpointy a logika pre registráciu, login, odhlásenie, integrácia prihlasovania cez Google účet. Pre uložené dokumenty sa bude ukladať link na server, dokumenty budú rozšíriteľné na viacstranové, v databáze sa bude ukladať informácia o type dokumentu (šifra/klúč).
+Backend bol napojený na databázu so základnou schémou. Ukladanie nahratých dokumentov do databázy, diskusia o formáte uloženia. API endpointy a logika pre registráciu, login, odhlásenie, integrácia prihlasovania cez Google účet. Pre uložené dokumenty sa bude ukladať link na server, dokumenty budú rozšíriteľné na viacstranové, v databáze sa bude ukladať informácia o type dokumentu (šifra/kľúč).
 
 \paragraph{3. Ukážka UI pre registráciu a prihlasenie}
 Prezentované základné UI pre registráciu, prihlásenie a upload dokumentov.
@@ -101,5 +77,3 @@ Prebehla ukážka funkčného serveru na Raspberry Pi, ktorý beží ako lokáln
 Dátum: 31. októbra 2025 \\
 Čas: 14:00 \\
 Umiestnenie: Online – Discord
-
-\end{document}

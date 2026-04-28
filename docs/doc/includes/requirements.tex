@@ -1,0 +1,37 @@
+\section{Požiadavky na systém}
+
+Na základe konzultácií s vedúcim projektu a analýzy potrieb cieľových používateľov bol zostavený zoznam funkčných a nefunkčných požiadaviek na systém. Požiadavky sú rozdelené do niekoľkých logických kategórií, ktoré odrážajú hlavné oblasti funkcionality platformy.
+
+\subsection{Funkčné požiadavky}
+
+\subsubsection{Spracovanie šifrovacích dokumentov}
+
+Jadrom systému je spracovanie historických šifrovacích dokumentov. Systém musí umožniť nahratie dokumentu vo forme obrázka alebo skenu a validovať formát vstupného súboru, pričom neplatné vstupy budú odmietnuté. Používateľ musí mať možnosť klasifikovať dokument podľa jeho typu (šifrovací kľúč alebo šifrový text).
+
+Dôležitou súčasťou spracovania je predspracovanie obrázkov, kde používateľ musí mať možnosť upraviť parametre ako thresholdy, odstránenie šumu a vyrovnanie dokumentu. Tieto zmeny by sa mali zobrazovať v reálnom čase, aby používateľ videl ich vplyv na kvalitu spracovania.
+
+Po automatickom spracovaní dokumentu musí mať používateľ možnosť manuálne upraviť navrhnuté bounding boxy a ťuknutím na bounding box zmeniť návrh rozpoznania. Systém má vedieť automaticky detegovať tabuľky v šifrovacích kľúčoch a používateľ musí byť schopný anotovať symboly a oblasti dokumentu.
+
+Používateľ aj systém musia vedieť mapovať symboly do databázy a systém musí podporovať rekonštrukciu substitučných tabuliek. Používateľ musí vedieť použiť šifrovací kľúč na dešifrovanie textu a upravovať návrh dešifrovania. K dispozícii musí byť možnosť vrátiť sa k predchádzajúcim krokom a upraviť ich. K nahratým dokumentom bude automaticky pridaný watermark na ochranu autorských práv.
+
+\subsubsection{Používateľský profil a autentifikácia}
+
+Systém musí umožniť registráciu nového používateľa vrátane možnosti registrácie pomocou Google účtu. Používateľom musí byť umožnené prihlásenie a odhlásenie zo systému. Registrovaný používateľ musí mať možnosť upraviť svoj profil vrátane mena a hesla a spravovať svoje dokumenty prostredníctvom zobrazenia a mazania.
+
+Všetky zmeny vykonané v systéme sa zaznamenávajú do histórie aktivity, vrátane nahratia dokumentu, jeho úpravy a zdieľania.
+
+\subsubsection{Správa dokumentov}
+
+Systém musí umožniť zobrazenie všetkých dokumentov a používateľ musí vedieť filtrovať dokumenty podľa rôznych kritérií ako typ dokumentu, jazyk, krajina pôvodu, dátum alebo autor. Používateľ musí vedieť prepínať medzi verejným a súkromným režimom svojich dokumentov a zdieľať dokumenty s inými používateľmi, pričom môže nastaviť rôzne role prístupu (čítanie alebo zápis).
+
+\subsubsection{Gamifikácia}
+
+Pre zvýšenie motivácie používateľov systém implementuje prvky gamifikácie. Používateľ môže získavať body za aktivitu v systéme, napríklad za nahrávanie dokumentov alebo vytváranie anotácií. Body je možné míňať na AI spracovanie a pokročilé funkcie. Systém zobrazuje rebríček používateľov podľa získaných bodov.
+
+\subsubsection{Administrácia}
+
+Administrátor systému má možnosť spravovať používateľov, dokumenty a symbolovú databázu. Správa symbolovej databázy zahŕňa normalizáciu, zlúčenie duplicitných symbolov a odstránenie chybných záznamov.
+
+\subsection{Nefunkčné požiadavky}
+
+Systém musí byť dostupný cez webové rozhranie. Bezpečnosť je zabezpečená šifrovaním hesiel a kontrolou prístupov k dokumentom. Používateľské rozhranie musí byť intuitívne a responzívne, vrátane podpory pre mobilné zariadenia. Architektúra systému musí byť modulárna, aby bolo možné jednoducho rozšíriť systém o nové AI moduly.
