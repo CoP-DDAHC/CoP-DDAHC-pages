@@ -1,4 +1,4 @@
-# Zápisnica – OCR a review krok, pipeline
+# Zápisnica – OCR a review krok v pipeline
 
 **Dátum:** 9. apríl 2026  
 **Čas:** 12:00 – 13:00  
