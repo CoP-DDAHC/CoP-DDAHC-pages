@@ -40,8 +40,49 @@
     "file": "2026-02-19-pipeline_funkcionalita.md"
   },
   {
+    "date": "2026-02-26",
+    "title": "Pipeline UI, autentifikácia a vývojové prostredie",
+    "file": "2026-02-26-pipeline_ui_a_infra.md"
+  },
+  {
+    "date": "2026-03-05",
+    "title": "Detekčná fáza pipeline a úpravy obrázka",
+    "file": "2026-03-05-detekcia_a_upravy_obrazka.md"
+  },
+  {
+    "date": "2026-03-12",
+    "title": "Admin rozhranie a activity log",
+    "file": "2026-03-12-admin_a_logovanie.md"
+  },
+  {
     "date": "2026-03-19",
     "title": "Finalizácia požiadaviek",
     "file": "2026-03-19-finalizácia požiadaviek.md"
+  },
+  
+  {
+    "date": "2026-03-26",
+    "title": "Dizajn domovskej a admin stránky",
+    "file": "2026-03-26-dizajn_domovskej_a_admin_stranky.md"
+  },
+  {
+    "date": "2026-04-02",
+    "title": "Konfigurácia API a integrácia do main vetvy",
+    "file": "2026-04-02-konfiguracia_a_integracia_main.md"
+  },
+  {
+    "date": "2026-04-09",
+    "title": "OCR a review krok, pipeline",
+    "file": "2026-04-09-ocr_a_review_krok.md"
+  },
+  {
+    "date": "2026-04-16",
+    "title": "Export, perzistencia stavu a UI úpravy",
+    "file": "2026-04-16-export_persistencia_a_ui.md"
+  },
+  {
+    "date": "2026-04-23",
+    "title": "Zdieľanie dokumentov a finálne UI úpravy",
+    "file": "2026-04-23-zdielanie_dokumentov_a_finalne_ui.md"
   }
 ]
